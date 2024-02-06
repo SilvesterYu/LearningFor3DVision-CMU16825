@@ -9,6 +9,7 @@ import argparse
 import matplotlib.pyplot as plt
 import pytorch3d
 import torch
+import sys
 
 from starter.utils import get_device, get_mesh_renderer, load_cow_mesh
 
@@ -44,6 +45,8 @@ def render_cow(
     cameras = pytorch3d.renderer.FoVPerspectiveCameras(
         R=torch.eye(3).unsqueeze(0), T=torch.tensor([[0, 0, 3]]), fov=60, device=device
     )
+    R, T = pytorch3d.renderer.look_at_view_transform(dist=3, elev=0, azim=90)
+    cameras = pytorch3d.renderer.FoVPerspectiveCameras(R=R, T=T, device=device)
 
     # Place a point light in front of the cow.
     lights = pytorch3d.renderer.PointLights(location=[[0, 0, -3]], device=device)
