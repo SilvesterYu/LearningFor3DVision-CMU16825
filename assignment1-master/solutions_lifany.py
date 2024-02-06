@@ -15,6 +15,7 @@ save_path = "results/"
 ### Q 1.1 360-degree Renders ###
 def render_cow_360d(
     cow_path="data/cow.obj", 
+    mesh = None,
     image_size=256, 
     color=[0.7, 0.7, 1], 
     device=None, 
@@ -35,16 +36,17 @@ def render_cow_360d(
     renderer = get_mesh_renderer(image_size=image_size)
 
     # Get the vertices, faces, and textures.
-    vertices, faces = load_cow_mesh(cow_path)
-    vertices = vertices.unsqueeze(0)  # (N_v, 3) -> (1, N_v, 3)
-    faces = faces.unsqueeze(0)  # (N_f, 3) -> (1, N_f, 3)
-    textures = torch.ones_like(vertices)  # (1, N_v, 3)
-    textures = textures * torch.tensor(color)  # (1, N_v, 3)
-    mesh = pytorch3d.structures.Meshes(
-        verts=vertices,
-        faces=faces,
-        textures=pytorch3d.renderer.TexturesVertex(textures),
-    )
+    if mesh == None:
+        vertices, faces = load_cow_mesh(cow_path)
+        vertices = vertices.unsqueeze(0)  # (N_v, 3) -> (1, N_v, 3)
+        faces = faces.unsqueeze(0)  # (N_f, 3) -> (1, N_f, 3)
+        textures = torch.ones_like(vertices)  # (1, N_v, 3)
+        textures = textures * torch.tensor(color)  # (1, N_v, 3)
+        mesh = pytorch3d.structures.Meshes(
+            verts=vertices,
+            faces=faces,
+            textures=pytorch3d.renderer.TexturesVertex(textures),
+        )
     mesh = mesh.to(device)
 
     res = []
@@ -104,18 +106,69 @@ def dolly_zoom(
         images.append(np.array(image))
     imageio.mimsave(output_file, images, fps=(num_frames / duration))
 
+### Q 2.1 Constructing a Tetrahedron ###
+### Q 2.2 Constructing a Cube ###
+def construct_mesh(vertices=None,
+                   faces=None,
+                   fname="q2_1.gif",
+                   device = None,
+                   image_size=256,
+                   angle_step=5,
+                   fps=15):
+    if device == None:
+        device = get_device()
+    if vertices==None and faces==None:
+        vertices = torch.Tensor([[-0.5, -0.5, -0.5], [-0.5, 0.5, -0.5], [0.4, 0, -0.5], [0, 0, 0.3]])
+        faces = torch.Tensor([[0, 1, 2], [1, 2, 3], [0, 1, 3], [0, 2, 3]])
+    vertices = vertices.unsqueeze(0)  # (N_v, 3) -> (1, N_v, 3)
+    faces = faces.unsqueeze(0)  # (N_f, 3) -> (1, N_f, 3)
+    textures = torch.ones_like(vertices)  # (1, N_v, 3)
+    textures = textures * torch.tensor([[0, 0.4, 0.4]])  # (1, N_v, 3)
+    mesh = pytorch3d.structures.Meshes(
+        verts=vertices,
+        faces=faces,
+        textures=pytorch3d.renderer.TexturesVertex(textures),
+    )
+    render_cow_360d(mesh=mesh, fname=fname, image_size=image_size, angle_step=angle_step, fps=fps)
 
 if __name__ == "__main__":
     # Q 1.1
-    render_cow_360d(image_size = 1024)
+    # render_cow_360d(image_size = 1024)
 
     # Q 1.2
-    dolly_zoom(
-        image_size=1024,
-        num_frames=30,
-        duration=3,
-        output_file=save_path + "q1_2.gif"
-    )
+    # dolly_zoom(
+    #     image_size=1024,
+    #     num_frames=30,
+    #     duration=3,
+    #     output_file=save_path + "q1_2.gif"
+    # )
 
     # Q 2.1
+    # construct_mesh()
 
+    # Q 2.2
+    vertices_cube = torch.Tensor([
+        [-0.5, -1, 0],
+        [-0.5, 1, 0],
+        [-0.5, 1, 1],
+        [-0.5, -1, 1],
+        [0.5, -1, 0],
+        [0.5, 1, 0],
+        [0.5, 1, 1],
+        [0.5, -1, 1]
+        ])
+    faces_cube = torch.Tensor([
+        [0, 1, 2],
+        [2, 3, 0],
+        [0, 1, 5],
+        [4, 5, 0],
+        [1, 2, 5],
+        [5, 6, 2],
+        [2, 3, 6],
+        [6, 7, 3],
+        [3, 0, 7],
+        [7, 4, 0],
+        [4, 5, 6],
+        [6, 7, 4]
+    ])
+    construct_mesh(vertices = vertices_cube, faces = faces_cube, fname = "q2_2.gif", image_size=1024, angle_step=3, fps=20)
