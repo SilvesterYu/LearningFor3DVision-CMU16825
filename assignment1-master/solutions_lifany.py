@@ -175,7 +175,7 @@ def render_cow(
 
 if __name__ == "__main__":
     # Q 1.1
-    render_360d(image_size = 1024)
+    # render_360d(image_size = 1024)
 
     # Q 1.2
     # dolly_zoom(
