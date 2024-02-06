@@ -142,6 +142,36 @@ def construct_mesh(vertices=None,
     )
     render_360d(mesh=mesh, fname=fname, image_size=image_size, angle_step=angle_step, fps=fps)
 
+### Q 4 Camera Transformations ###
+def render_cow(
+    cow_path="data/cow_with_axis.obj",
+    image_size=256,
+    R_relative=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+    T_relative=[0, 0, 0],
+    device=None,
+    save_path=save_path, 
+    fname="q4_0.jpg", 
+):
+    if device is None:
+        device = get_device()
+    meshes = pytorch3d.io.load_objs_as_meshes([cow_path]).to(device)
+
+    R_relative = torch.tensor(R_relative).float()
+    T_relative = torch.tensor(T_relative).float()
+    R = R_relative @ torch.tensor([[1.0, 0, 0], [0, 1, 0], [0, 0, 1]])
+    T = R_relative @ torch.tensor([0.0, 0, 3]) + T_relative
+    # since the pytorch3d internal uses Point= point@R+t instead of using Point=R @ point+t,
+    # we need to add R.t() to compensate that.
+    renderer = get_mesh_renderer(image_size=image_size)
+    cameras = pytorch3d.renderer.FoVPerspectiveCameras(
+        R=R.t().unsqueeze(0), T=T.unsqueeze(0), device=device,
+    )
+    lights = pytorch3d.renderer.PointLights(location=[[0, 0.0, -3.0]], device=device,)
+    rend = renderer(meshes, cameras=cameras, lights=lights)
+    rend = rend[0, ..., :3].cpu().numpy()
+    plt.imsave(save_path + fname, rend)
+
+    return rend
 
 if __name__ == "__main__":
     # Q 1.1
@@ -186,7 +216,27 @@ if __name__ == "__main__":
     # construct_mesh(vertices = vertices_cube, faces = faces_cube, fname = "q2_2.gif", image_size=1024, angle_step=3, fps=20)
 
     # Q 3 Re-texturing a mesh
-    color1 = [0.2, 0.6, 0.2] # green
-    color2 = [0.2, 0.4, 0.9] # blue
-    render_360d(fname="q3.gif", image_size = 256, color1=color1, color2=color2)
+    # color1 = [0.2, 0.6, 0.2] # green
+    # color2 = [0.2, 0.4, 0.9] # blue
+    # render_360d(fname="q3.gif", image_size = 1024, color1=color1, color2=color2)
+    
+    # Q 4
+    # top-left image
+    # angle1 = torch.Tensor([0, 0, np.pi/2])
+    # R1 = pytorch3d.transforms.euler_angles_to_matrix(angle1, "XYZ")
+    # render_cow(R_relative=R1, fname="q4_1.jpg")
+
+    # top-right image
+    # T2 = torch.Tensor([0, 0, 2])
+    # render_cow(T_relative=T2, fname="q4_2.jpg")
+
+    # bottom-left image
+    T3 = [0.5, -0.5, -0.05]
+    # render_cow(T_relative=T3, fname="q4_3.jpg")
+
+    # bottom-right image
+    # angle4 = torch.Tensor([0, -np.pi/2, 0])
+    # R4 = pytorch3d.transforms.euler_angles_to_matrix(angle4, "XYZ")
+    # T4 = [3, 0, 3]
+    # render_cow(R_relative=R4, T_relative=T4, fname="q4_4.jpg")
     
