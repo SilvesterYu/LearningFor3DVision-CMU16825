@@ -13,7 +13,7 @@ from tqdm.auto import tqdm
 save_path = "results/"
 
 ### Q 1.1 360-degree Renders ###
-def render_cow_360d(
+def render_360d(
     cow_path="data/cow.obj", 
     mesh = None,
     image_size=256, 
@@ -22,7 +22,9 @@ def render_cow_360d(
     save_path=save_path, 
     fname="q1_1.gif", 
     angle_step=5, # create a view per how many degrees
-    fps=15 # how many frames per second
+    fps=15, # how many frames per second
+    color1=None,
+    color2=None
 ):
     # The device tells us whether we are rendering with GPU or CPU. The rendering will
     # be *much* faster if you have a CUDA-enabled NVIDIA GPU. However, your code will
@@ -41,7 +43,16 @@ def render_cow_360d(
         vertices = vertices.unsqueeze(0)  # (N_v, 3) -> (1, N_v, 3)
         faces = faces.unsqueeze(0)  # (N_f, 3) -> (1, N_f, 3)
         textures = torch.ones_like(vertices)  # (1, N_v, 3)
-        textures = textures * torch.tensor(color)  # (1, N_v, 3)
+        if color1 is not None and color2 is not None:
+            z = vertices[:, :, -1]
+            z_min = torch.min(z).item()
+            z_max = torch.max(z).item()
+            for i in range(len(z[0])):
+                alpha = (z[0][i].item() - z_min) / (z_max - z_min)
+                color = alpha * torch.tensor(color2) + (1 - alpha) * torch.tensor(color1)
+                textures[0][i] = color
+        else:
+            textures = textures * torch.tensor(color)  # (1, N_v, 3)
         mesh = pytorch3d.structures.Meshes(
             verts=vertices,
             faces=faces,
@@ -129,11 +140,12 @@ def construct_mesh(vertices=None,
         faces=faces,
         textures=pytorch3d.renderer.TexturesVertex(textures),
     )
-    render_cow_360d(mesh=mesh, fname=fname, image_size=image_size, angle_step=angle_step, fps=fps)
+    render_360d(mesh=mesh, fname=fname, image_size=image_size, angle_step=angle_step, fps=fps)
+
 
 if __name__ == "__main__":
     # Q 1.1
-    # render_cow_360d(image_size = 1024)
+    render_360d(image_size = 1024)
 
     # Q 1.2
     # dolly_zoom(
@@ -144,31 +156,37 @@ if __name__ == "__main__":
     # )
 
     # Q 2.1
-    # construct_mesh()
+    # construct_mesh(image_size=1024, angle_step=3, fps=20)
 
     # Q 2.2
-    vertices_cube = torch.Tensor([
-        [-0.5, -1, 0],
-        [-0.5, 1, 0],
-        [-0.5, 1, 1],
-        [-0.5, -1, 1],
-        [0.5, -1, 0],
-        [0.5, 1, 0],
-        [0.5, 1, 1],
-        [0.5, -1, 1]
-        ])
-    faces_cube = torch.Tensor([
-        [0, 1, 2],
-        [2, 3, 0],
-        [0, 1, 5],
-        [4, 5, 0],
-        [1, 2, 5],
-        [5, 6, 2],
-        [2, 3, 6],
-        [6, 7, 3],
-        [3, 0, 7],
-        [7, 4, 0],
-        [4, 5, 6],
-        [6, 7, 4]
-    ])
-    construct_mesh(vertices = vertices_cube, faces = faces_cube, fname = "q2_2.gif", image_size=1024, angle_step=3, fps=20)
+    # vertices_cube = torch.Tensor([
+    #     [-0.5, -1, 0],
+    #     [-0.5, 1, 0],
+    #     [-0.5, 1, 1],
+    #     [-0.5, -1, 1],
+    #     [0.5, -1, 0],
+    #     [0.5, 1, 0],
+    #     [0.5, 1, 1],
+    #     [0.5, -1, 1]
+    #     ])
+    # faces_cube = torch.Tensor([
+    #     [0, 1, 2],
+    #     [2, 3, 0],
+    #     [0, 1, 5],
+    #     [4, 5, 0],
+    #     [1, 2, 5],
+    #     [5, 6, 2],
+    #     [2, 3, 6],
+    #     [6, 7, 3],
+    #     [3, 0, 7],
+    #     [7, 4, 0],
+    #     [4, 5, 6],
+    #     [6, 7, 4]
+    # ])
+    # construct_mesh(vertices = vertices_cube, faces = faces_cube, fname = "q2_2.gif", image_size=1024, angle_step=3, fps=20)
+
+    # Q 3 Re-texturing a mesh
+    color1 = [0.2, 0.6, 0.2] # green
+    color2 = [0.2, 0.4, 0.9] # blue
+    render_360d(fname="q3.gif", image_size = 256, color1=color1, color2=color2)
+    
