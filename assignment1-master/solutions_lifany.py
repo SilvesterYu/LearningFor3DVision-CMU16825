@@ -231,7 +231,7 @@ if __name__ == "__main__":
     # render_cow(T_relative=T2, fname="q4_2.jpg")
 
     # bottom-left image
-    T3 = [0.5, -0.5, -0.05]
+    # T3 = [0.5, -0.5, -0.05]
     # render_cow(T_relative=T3, fname="q4_3.jpg")
 
     # bottom-right image
