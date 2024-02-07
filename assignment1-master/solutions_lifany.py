@@ -3,12 +3,13 @@ import matplotlib.pyplot as plt
 import pytorch3d
 import torch
 import sys
-from starter.utils import get_device, get_mesh_renderer, load_cow_mesh
+from starter.utils import get_device, get_mesh_renderer, load_cow_mesh, unproject_depth_image
 import imageio
 import numpy as np
 from PIL import Image as im 
 from PIL import ImageDraw
 from tqdm.auto import tqdm
+from starter.render_generic import *
 
 save_path = "results/"
 
@@ -173,6 +174,78 @@ def render_cow(
 
     return rend
 
+### Q 5 Rendering Generic 3D Representations ###
+### Q 5.1 Rendering Point Clouds from RGB-D Images ###
+def generate_pcd(device=None):
+    data = load_rgbd_data()
+    if device is None:
+        device = get_device()
+
+    image1 = torch.Tensor(data["rgb1"])
+    mask1 = torch.Tensor(data["mask1"])
+    depth1 = torch.Tensor(data["depth1"])
+    camera1 = data["cameras1"]
+    pts1, rgb1 = unproject_depth_image(image1, mask1, depth1, camera1)
+
+    image2 = torch.Tensor(data["rgb2"])
+    mask2 = torch.Tensor(data["mask2"])
+    depth2 = torch.Tensor(data["depth2"])
+    camera2 = data["cameras2"]
+    pts2, rgb2 = unproject_depth_image(image2, mask2, depth2, camera2)
+
+    verts1 = torch.Tensor(pts1).to(device).unsqueeze(0)
+    feat1 = torch.Tensor(rgb1).to(device).unsqueeze(0)
+    verts2 = torch.Tensor(pts2).to(device).unsqueeze(0)
+    feat2 = torch.Tensor(rgb2).to(device).unsqueeze(0)
+    verts3 = torch.Tensor(torch.cat((pts1, pts2), 0)).to(device).unsqueeze(0)
+    feat3 = torch.Tensor(torch.cat((rgb1, rgb2), 0)).to(device).unsqueeze(0)
+
+    pcd1 = pytorch3d.structures.Pointclouds(points=verts1, features=feat1)
+    pcd2 = pytorch3d.structures.Pointclouds(points=verts2, features=feat2)
+    pcd3 = pytorch3d.structures.Pointclouds(points=verts3, features=feat3)
+
+    return pcd1, pcd2, pcd3
+
+def visualize_pcd(
+        pcd,
+        image_size = 256,
+        background_color=(1, 1, 1),
+        save_path = save_path,
+        fname = "q5_1_0.gif",
+        device = None,
+        fps = 15,
+        angle_step = 5,
+    ):
+    if device is None:
+        device = get_device()
+    renderer = get_points_renderer(
+    image_size=image_size, background_color=background_color
+    )
+    
+    angle = torch.Tensor([0, 0, np.pi])
+    r = pytorch3d.transforms.euler_angles_to_matrix(angle, "XYZ")
+    res = []
+    for angle in range(-180, 180, angle_step):
+        # Prepare the camera:
+        R, T = pytorch3d.renderer.look_at_view_transform(dist=7, elev=0, azim=angle)
+        cameras = pytorch3d.renderer.FoVPerspectiveCameras(R=R @ r, T=T, device=device)
+
+        # Place a point light in front of the cow.
+        lights = pytorch3d.renderer.PointLights(location=[[0, 0, -3]], device=device)
+
+        rend = renderer(pcd, cameras=cameras, lights=lights)
+        rend = rend.cpu().numpy()[0, ..., :3]  # (B, H, W, 4) -> (H, W, 3)
+        # The .cpu moves the tensor to GPU (if needed).
+
+        # convert datatype to avoid errors while saving gif
+        rend = rend*255
+        rend = rend.astype(np.uint8)
+        # plt.imsave(savepath + str(angle) + ".jpg", rend)
+        res.append(rend)
+
+    imageio.mimsave(save_path + fname, res, fps=fps)
+
+
 if __name__ == "__main__":
     # Q 1.1
     # render_360d(image_size = 1024)
@@ -240,3 +313,8 @@ if __name__ == "__main__":
     # T4 = [3, 0, 3]
     # render_cow(R_relative=R4, T_relative=T4, fname="q4_4.jpg")
     
+    # Q 5.1
+    pcd1, pcd2, pcd3 = generate_pcd()
+    visualize_pcd(pcd1, image_size = 1024, fname="q5_1_1.gif")
+    visualize_pcd(pcd2, image_size = 1024, fname="q5_1_2.gif")
+    visualize_pcd(pcd3, image_size = 1024, fname="q5_1_3.gif")
