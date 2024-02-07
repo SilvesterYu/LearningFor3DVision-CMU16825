@@ -257,6 +257,8 @@ def torus(
         fps = 15,
         angle_step = 5,
         num_samples = 200,
+        a = 1,
+        b = 2
 ):
     if device is None:
         device = get_device()
@@ -265,7 +267,6 @@ def torus(
     theta = torch.linspace(0, 2 * np.pi, num_samples)
     # Densely sample phi and theta on a grid
     Phi, Theta = torch.meshgrid(phi, theta)
-    a, b = 1, 2
 
     x = a * (torch.cos(Theta) + b) * torch.cos(Phi)
     y = a * (torch.cos(Theta) + b)* torch.sin(Phi)
@@ -366,7 +367,9 @@ if __name__ == "__main__":
     # visualize_pcd(pcd3, image_size = 1024, fname="q5_1_3.gif")
 
     # Q 5.2
-    torus(image_size = 1024, num_samples=800)
+    # torus(image_size = 1024, num_samples=800)
 
-    
+    # Q 5.3
+
+
 
