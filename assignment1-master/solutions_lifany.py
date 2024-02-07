@@ -317,7 +317,7 @@ def custom_pointcloud(image_size = 256,
     phi = torch.linspace(0, 4 * np.pi, num_samples)
     theta = torch.linspace(0, 4 * np.pi, num_samples)
     R, h = 3, 1
-    t = torch.linspace(0, 6 * np.pi, num_samples)
+    t = torch.linspace(-3 * np.pi, 3 * np.pi, num_samples)
 
     # Densely sample phi and theta on a grid
     phi, t = torch.meshgrid(phi, t)
@@ -345,7 +345,7 @@ def custom_pointcloud(image_size = 256,
         device = device,
         fps = fps,
         angle_step = angle_step,
-        dist = 15,
+        dist = 25,
         elev = 0
     )
 
@@ -365,14 +365,11 @@ def render_torus(
         ):
     if device is None:
         device = get_device()
-    min_value = -2
-    max_value = 2
+    min_value = -5
+    max_value = 5
     X, Y, Z = torch.meshgrid([torch.linspace(min_value, max_value, voxel_size)] * 3)
     # voxels = X ** 2 + Y ** 2 + Z ** 2 - 1
-    R = 1
-    a = 0.2
-    r = 0.01
-    voxels = ((X ** 2 + Y ** 2 + Z ** 2 + R ** 2 - a ** 2) ** 2 - 4 * R ** 2 * (Y ** 2 + Z ** 2)) * ((X ** 2 + Y ** 2 + Z ** 2 + R ** 2 - a ** 2) ** 2 - 4 * R ** 2 * (X ** 2 + Z ** 2)) * ((X ** 2 + Y ** 2 + Z ** 2 + R ** 2 - a ** 2) ** 2 - 4 * R ** 2 * (Y ** 2 + X ** 2)) - r
+    voxels = (b - np.sqrt(X ** 2 + Y ** 2)) ** 2 + Z ** 2 - a ** 2
     vertices, faces = mcubes.marching_cubes(mcubes.smooth(voxels), isovalue=0)
     vertices = torch.tensor(vertices).float()
     faces = torch.tensor(faces.astype(int))
@@ -394,8 +391,56 @@ def render_torus(
     plt.imsave("results/5_3.jpg", rend)
 
     render_360d(mesh=mesh, fname=fname, image_size=image_size, angle_step=angle_step, fps=fps, clip = True, dist = dist, elev = elev)
-    
 
+def render_tori(
+        image_size=256, 
+        voxel_size=64, 
+        device=None,
+        save_path = save_path,
+        fname = "q5_3_custom.gif",
+        fps = 15,
+        angle_step = 5,
+        a = 1,
+        b = 2,
+        dist = 10,
+        elev = 0
+        ):
+    if device is None:
+        device = get_device()
+    min_value = -4
+    max_value = 4
+    X, Y, Z = torch.meshgrid([torch.linspace(min_value, max_value, voxel_size)] * 3)
+    # voxels = X ** 2 + Y ** 2 + Z ** 2 - 1
+    R = 3
+    a = 0.5
+    r = 0.01
+    voxels = ((X ** 2 + Y ** 2 + Z ** 2 + R ** 2 - a ** 2) ** 2 - 4 * R ** 2 * (Y ** 2 + Z ** 2)) * ((X ** 2 + Y ** 2 + Z ** 2 + R ** 2 - a ** 2) ** 2 - 4 * R ** 2 * (X ** 2 + Z ** 2)) * ((X ** 2 + Y ** 2 + Z ** 2 + R ** 2 - a ** 2) ** 2 - 4 * R ** 2 * (Y ** 2 + X ** 2)) - r
+    vertices, faces = mcubes.marching_cubes(mcubes.smooth(voxels), isovalue=0)
+    vertices = torch.tensor(vertices).float()
+    faces = torch.tensor(faces.astype(int))
+    # Vertex coordinates are indexed by array position, so we need to
+    # renormalize the coordinate system.
+    vertices = (vertices / voxel_size) * (max_value - min_value) + min_value
+    textures = (vertices - vertices.min()) / (vertices.max() - vertices.min())
+    textures = pytorch3d.renderer.TexturesVertex(vertices.unsqueeze(0))
+
+    mesh = pytorch3d.structures.Meshes([vertices], [faces], textures=textures).to(
+        device
+    )
+    lights = pytorch3d.renderer.PointLights(location=[[0, 0.0, -4.0]], device=device,)
+    renderer = get_mesh_renderer(image_size=image_size, device=device)
+    R, T = pytorch3d.renderer.look_at_view_transform(dist=dist, elev=elev, azim=180)
+    cameras = pytorch3d.renderer.FoVPerspectiveCameras(R=R, T=T, device=device)
+    rend = renderer(mesh, cameras=cameras, lights=lights)
+    rend = rend[0, ..., :3].detach().cpu().numpy().clip(0, 1)
+    plt.imsave("results/5_3_custom.jpg", rend)
+
+    render_360d(mesh=mesh, fname=fname, image_size=image_size, angle_step=angle_step, fps=fps, clip = True, dist = dist, elev = elev)
+   
+### Q 6 Do Something Fun ###
+def fun():
+
+    return
 
 if __name__ == "__main__":
     # Q 1.1
@@ -472,10 +517,11 @@ if __name__ == "__main__":
 
     # Q 5.2
     # torus(image_size = 1024, num_samples=800)
-    # custom_pointcloud(image_size = 256, angle_step=5)
+    # custom_pointcloud(image_size = 1024, num_samples = 600, angle_step=5)
 
     # Q 5.3
     # render_torus(image_size = 1024)   
-    render_torus(image_size = 1024, fname = "5_3.custom.gif") 
+    # render_tori(image_size = 1024) 
 
-
+    # Q 6
+    fun()
