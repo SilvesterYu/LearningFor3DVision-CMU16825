@@ -25,7 +25,10 @@ def render_360d(
     angle_step=5, # create a view per how many degrees
     fps=15, # how many frames per second
     color1=None,
-    color2=None
+    color2=None,
+    clip = False,
+    dist = 3,
+    elev = 0
 ):
     # The device tells us whether we are rendering with GPU or CPU. The rendering will
     # be *much* faster if you have a CUDA-enabled NVIDIA GPU. However, your code will
@@ -65,7 +68,8 @@ def render_360d(
 
     for angle in range(-180, 180, angle_step):
         # Prepare the camera:
-        R, T = pytorch3d.renderer.look_at_view_transform(dist=3, elev=0, azim=angle)
+        print(angle)
+        R, T = pytorch3d.renderer.look_at_view_transform(dist=dist, elev=elev, azim=angle)
         cameras = pytorch3d.renderer.FoVPerspectiveCameras(R=R, T=T, device=device)
 
         # Place a point light in front of the cow.
@@ -73,6 +77,8 @@ def render_360d(
 
         rend = renderer(mesh, cameras=cameras, lights=lights)
         rend = rend.cpu().numpy()[0, ..., :3]  # (B, H, W, 4) -> (H, W, 3)
+        if clip:
+            rend = rend.clip(0, 1)
         # The .cpu moves the tensor to GPU (if needed).
 
         # convert datatype to avoid errors while saving gif
@@ -229,6 +235,7 @@ def visualize_pcd(
     res = []
     for angle in range(-180, 180, angle_step):
         # Prepare the camera:
+        print(angle)
         R, T = pytorch3d.renderer.look_at_view_transform(dist=dist, elev=elev, azim=angle)
         cameras = pytorch3d.renderer.FoVPerspectiveCameras(R=R @ r, T=T, device=device)
 
@@ -247,7 +254,7 @@ def visualize_pcd(
 
     imageio.mimsave(save_path + fname, res, fps=fps)
 
-###Q 5.2 Parametric Functions ###
+### Q 5.2 Parametric Functions ###
 def torus(
         image_size = 256,
         background_color=(1, 1, 1),
@@ -291,6 +298,103 @@ def torus(
         dist = 8,
         elev = 0
     )
+
+def custom_pointcloud(image_size = 256,
+        background_color=(1, 1, 1),
+        save_path = save_path,
+        fname = "q5_2_custom.gif",
+        device = None,
+        fps = 15,
+        angle_step = 5,
+        num_samples = 200,
+        a = 1, 
+        b = 2
+        ):
+
+    if device is None:
+        device = get_device()
+
+    phi = torch.linspace(0, 4 * np.pi, num_samples)
+    theta = torch.linspace(0, 4 * np.pi, num_samples)
+    R, h = 3, 1
+    t = torch.linspace(0, 6 * np.pi, num_samples)
+
+    # Densely sample phi and theta on a grid
+    phi, t = torch.meshgrid(phi, t)
+
+    # x = a * (torch.cos(Theta) + b) * torch.cos(Phi)
+    # y = a * (torch.cos(Theta) + b)* torch.sin(Phi)
+    # z = a * torch.sin(Theta) 
+    x = h * t + (R * a * torch.sin(phi)) / np.sqrt(R ** 2 + h ** 2)
+    y = R * torch.cos(t) - a * torch.cos(t) * torch.cos(phi) - (h * a * torch.sin(t) * torch.sin(phi)) / np.sqrt(R ** 2 + h ** 2)
+    z = R * torch.sin(t) - a * torch.sin(t) * torch.cos(phi) + (h * a * torch.cos(t) * torch.sin(phi)) / np.sqrt(R ** 2 + h ** 2)
+
+    points = torch.stack((x.flatten(), y.flatten(), z.flatten()), dim=1)
+    color = (points - points.min()) / (points.max() - points.min())
+
+    sphere_point_cloud = pytorch3d.structures.Pointclouds(
+        points=[points], features=[color],
+    ).to(device)
+
+    visualize_pcd(
+        sphere_point_cloud,
+        image_size = image_size,
+        background_color = background_color,
+        save_path = save_path,
+        fname = fname,
+        device = device,
+        fps = fps,
+        angle_step = angle_step,
+        dist = 15,
+        elev = 0
+    )
+
+### Q 5.3 Implicit Surfaces ###
+def render_torus(
+        image_size=256, 
+        voxel_size=64, 
+        device=None,
+        save_path = save_path,
+        fname = "q5_3.gif",
+        fps = 15,
+        angle_step = 5,
+        a = 1,
+        b = 2,
+        dist = 10,
+        elev = 0
+        ):
+    if device is None:
+        device = get_device()
+    min_value = -2
+    max_value = 2
+    X, Y, Z = torch.meshgrid([torch.linspace(min_value, max_value, voxel_size)] * 3)
+    # voxels = X ** 2 + Y ** 2 + Z ** 2 - 1
+    R = 1
+    a = 0.2
+    r = 0.01
+    voxels = ((X ** 2 + Y ** 2 + Z ** 2 + R ** 2 - a ** 2) ** 2 - 4 * R ** 2 * (Y ** 2 + Z ** 2)) * ((X ** 2 + Y ** 2 + Z ** 2 + R ** 2 - a ** 2) ** 2 - 4 * R ** 2 * (X ** 2 + Z ** 2)) * ((X ** 2 + Y ** 2 + Z ** 2 + R ** 2 - a ** 2) ** 2 - 4 * R ** 2 * (Y ** 2 + X ** 2)) - r
+    vertices, faces = mcubes.marching_cubes(mcubes.smooth(voxels), isovalue=0)
+    vertices = torch.tensor(vertices).float()
+    faces = torch.tensor(faces.astype(int))
+    # Vertex coordinates are indexed by array position, so we need to
+    # renormalize the coordinate system.
+    vertices = (vertices / voxel_size) * (max_value - min_value) + min_value
+    textures = (vertices - vertices.min()) / (vertices.max() - vertices.min())
+    textures = pytorch3d.renderer.TexturesVertex(vertices.unsqueeze(0))
+
+    mesh = pytorch3d.structures.Meshes([vertices], [faces], textures=textures).to(
+        device
+    )
+    lights = pytorch3d.renderer.PointLights(location=[[0, 0.0, -4.0]], device=device,)
+    renderer = get_mesh_renderer(image_size=image_size, device=device)
+    R, T = pytorch3d.renderer.look_at_view_transform(dist=dist, elev=elev, azim=180)
+    cameras = pytorch3d.renderer.FoVPerspectiveCameras(R=R, T=T, device=device)
+    rend = renderer(mesh, cameras=cameras, lights=lights)
+    rend = rend[0, ..., :3].detach().cpu().numpy().clip(0, 1)
+    plt.imsave("results/5_3.jpg", rend)
+
+    render_360d(mesh=mesh, fname=fname, image_size=image_size, angle_step=angle_step, fps=fps, clip = True, dist = dist, elev = elev)
+    
 
 
 if __name__ == "__main__":
@@ -368,8 +472,10 @@ if __name__ == "__main__":
 
     # Q 5.2
     # torus(image_size = 1024, num_samples=800)
+    # custom_pointcloud(image_size = 256, angle_step=5)
 
     # Q 5.3
-
+    # render_torus(image_size = 1024)   
+    render_torus(image_size = 1024, fname = "5_3.custom.gif") 
 
 
