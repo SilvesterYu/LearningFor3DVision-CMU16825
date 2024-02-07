@@ -10,6 +10,9 @@ from PIL import Image as im
 from PIL import ImageDraw
 from tqdm.auto import tqdm
 from starter.render_generic import *
+from PIL import Image
+import torchvision.transforms as transforms 
+from pytorch3d.structures import Meshes
 
 save_path = "results/"
 
@@ -26,6 +29,7 @@ def render_360d(
     fps=15, # how many frames per second
     color1=None,
     color2=None,
+    textured = False,
     clip = False,
     dist = 3,
     elev = 0
@@ -55,8 +59,7 @@ def render_360d(
                 alpha = (z[0][i].item() - z_min) / (z_max - z_min)
                 color = alpha * torch.tensor(color2) + (1 - alpha) * torch.tensor(color1)
                 textures[0][i] = color
-        else:
-            textures = textures * torch.tensor(color)  # (1, N_v, 3)
+        textures = textures * torch.tensor(color)  # (1, N_v, 3)
         mesh = pytorch3d.structures.Meshes(
             verts=vertices,
             faces=faces,
@@ -438,8 +441,34 @@ def render_tori(
     render_360d(mesh=mesh, fname=fname, image_size=image_size, angle_step=angle_step, fps=fps, clip = True, dist = dist, elev = elev)
    
 ### Q 6 Do Something Fun ###
-def fun():
+def fun(
+        image_size = 512,
+        fname = "q6.gif",
+        device=None
+    ):
+    if device is None:
+        device = get_device()
 
+    render_360d(
+    cow_path="custom/Hogwarts.obj",
+    mesh = None,
+    image_size=image_size, 
+    color=[0.7, 0.7, 1], 
+    device=device, 
+    save_path=save_path, 
+    fname="q6.gif", 
+    angle_step=5, # create a view per how many degrees
+    fps=15, # how many frames per second
+    color1=[0.3, 0.6, 0.7],
+    color2=[0.4, 0.9, 0.3],
+    clip = False,
+    dist = 70000,
+    elev = -2000
+)
+
+
+### Q 7 Sampling Points on Meshes ###
+def sample():
     return
 
 if __name__ == "__main__":
@@ -525,3 +554,11 @@ if __name__ == "__main__":
 
     # Q 6
     fun()
+    # im1 = Image.open(r'custom/Pic1.jpg')
+    # im1.save(r'custom/Hogwarts.png')
+
+
+
+
+    # Q 7
+    sample()
