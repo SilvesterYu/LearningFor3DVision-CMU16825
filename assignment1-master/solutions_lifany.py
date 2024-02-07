@@ -215,6 +215,8 @@ def visualize_pcd(
         device = None,
         fps = 15,
         angle_step = 5,
+        dist = 7,
+        elev = 0
     ):
     if device is None:
         device = get_device()
@@ -227,7 +229,7 @@ def visualize_pcd(
     res = []
     for angle in range(-180, 180, angle_step):
         # Prepare the camera:
-        R, T = pytorch3d.renderer.look_at_view_transform(dist=7, elev=0, azim=angle)
+        R, T = pytorch3d.renderer.look_at_view_transform(dist=dist, elev=elev, azim=angle)
         cameras = pytorch3d.renderer.FoVPerspectiveCameras(R=R @ r, T=T, device=device)
 
         # Place a point light in front of the cow.
@@ -244,6 +246,50 @@ def visualize_pcd(
         res.append(rend)
 
     imageio.mimsave(save_path + fname, res, fps=fps)
+
+###Q 5.2 Parametric Functions ###
+def torus(
+        image_size = 256,
+        background_color=(1, 1, 1),
+        save_path = save_path,
+        fname = "q5_2.gif",
+        device = None,
+        fps = 15,
+        angle_step = 5,
+        num_samples = 200,
+):
+    if device is None:
+        device = get_device()
+
+    phi = torch.linspace(0, 2 * np.pi, num_samples)
+    theta = torch.linspace(0, 2 * np.pi, num_samples)
+    # Densely sample phi and theta on a grid
+    Phi, Theta = torch.meshgrid(phi, theta)
+    a, b = 1, 2
+
+    x = a * (torch.cos(Theta) + b) * torch.cos(Phi)
+    y = a * (torch.cos(Theta) + b)* torch.sin(Phi)
+    z = a * torch.sin(Theta) 
+
+    points = torch.stack((x.flatten(), y.flatten(), z.flatten()), dim=1)
+    color = (points - points.min()) / (points.max() - points.min())
+
+    sphere_point_cloud = pytorch3d.structures.Pointclouds(
+        points=[points], features=[color],
+    ).to(device)
+
+    visualize_pcd(
+        sphere_point_cloud,
+        image_size = image_size,
+        background_color = background_color,
+        save_path = save_path,
+        fname = fname,
+        device = device,
+        fps = fps,
+        angle_step = angle_step,
+        dist = 8,
+        elev = 0
+    )
 
 
 if __name__ == "__main__":
@@ -314,7 +360,13 @@ if __name__ == "__main__":
     # render_cow(R_relative=R4, T_relative=T4, fname="q4_4.jpg")
     
     # Q 5.1
-    pcd1, pcd2, pcd3 = generate_pcd()
-    visualize_pcd(pcd1, image_size = 1024, fname="q5_1_1.gif")
-    visualize_pcd(pcd2, image_size = 1024, fname="q5_1_2.gif")
-    visualize_pcd(pcd3, image_size = 1024, fname="q5_1_3.gif")
+    # pcd1, pcd2, pcd3 = generate_pcd()
+    # visualize_pcd(pcd1, image_size = 1024, fname="q5_1_1.gif")
+    # visualize_pcd(pcd2, image_size = 1024, fname="q5_1_2.gif")
+    # visualize_pcd(pcd3, image_size = 1024, fname="q5_1_3.gif")
+
+    # Q 5.2
+    torus(image_size = 1024, num_samples=800)
+
+    
+
