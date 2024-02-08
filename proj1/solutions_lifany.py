@@ -755,7 +755,7 @@ if __name__ == "__main__":
     #     upside_down = False
     # )
 
-    render_360d(fname = "q7_original.gif", fps = 15)
+    # render_360d(fname = "q7_original.gif", fps = 15)
     
     # make gifs loop forever
     # gifs = os.listdir("results")
@@ -766,12 +766,12 @@ if __name__ == "__main__":
     #         g = Image.open("results/" + item)
     #         g.save("results_loop/" + item, save_all=True, loop=0)
 
-    # gifs = os.listdir("results")
-    # print(gifs)
-    # for item in gifs:
-    #     print(item)
-    #     if "q7" in item:
-    #         g = Image.open("results/" + item)
-    #         g.save("results_loop/" + item, save_all=True, loop=0)
+    gifs = os.listdir("results")
+    print(gifs)
+    for item in gifs:
+        print(item)
+        if "q6" in item:
+            g = Image.open("results/" + item)
+            g.save("results_loop/" + item, save_all=True, loop=0)
 
     print("done!")
