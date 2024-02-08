@@ -687,13 +687,15 @@ if __name__ == "__main__":
     # fun(image_size=1024)
 
     # Q 7
-    # sample_pc = sample()
+    # sample_pc = sample(
+    #     sample_size=10
+    # )
     # visualize_pcd(
     #     sample_pc,
     #     image_size = 1024,
     #     background_color = [0, 0, 0],
     #     save_path = save_path,
-    #     fname = "q7.gif",
+    #     fname = "q7_10.gif",
     #     device = None,
     #     fps = 15,
     #     angle_step = 15,
@@ -701,6 +703,59 @@ if __name__ == "__main__":
     #     elev = 0,
     #     upside_down = False
     # )
+
+    # sample_pc = sample(
+    # sample_size=100
+    # )
+    # visualize_pcd(
+    #     sample_pc,
+    #     image_size = 1024,
+    #     background_color = [0, 0, 0],
+    #     save_path = save_path,
+    #     fname = "q7_100.gif",
+    #     device = None,
+    #     fps = 15,
+    #     angle_step = 15,
+    #     dist = 25,
+    #     elev = 0,
+    #     upside_down = False
+    # )
+
+    # sample_pc = sample(
+    # sample_size=1000
+    # )
+    # visualize_pcd(
+    #     sample_pc,
+    #     image_size = 1024,
+    #     background_color = [0, 0, 0],
+    #     save_path = save_path,
+    #     fname = "q7_1000.gif",
+    #     device = None,
+    #     fps = 15,
+    #     angle_step = 15,
+    #     dist = 25,
+    #     elev = 0,
+    #     upside_down = False
+    # )
+
+    # sample_pc = sample(
+    # sample_size=10000
+    # )
+    # visualize_pcd(
+    #     sample_pc,
+    #     image_size = 1024,
+    #     background_color = [0, 0, 0],
+    #     save_path = save_path,
+    #     fname = "q7_10000.gif",
+    #     device = None,
+    #     fps = 15,
+    #     angle_step = 15,
+    #     dist = 25,
+    #     elev = 0,
+    #     upside_down = False
+    # )
+
+    render_360d(fname = "q7_original.gif", fps = 15)
     
     # make gifs loop forever
     # gifs = os.listdir("results")
@@ -710,8 +765,13 @@ if __name__ == "__main__":
     #     if ".gif" in item:
     #         g = Image.open("results/" + item)
     #         g.save("results_loop/" + item, save_all=True, loop=0)
-    item = "q7.gif"
-    g = Image.open("results/" + item)
-    g.save("results_loop/" + item, save_all=True, loop=0)
+
+    # gifs = os.listdir("results")
+    # print(gifs)
+    # for item in gifs:
+    #     print(item)
+    #     if "q7" in item:
+    #         g = Image.open("results/" + item)
+    #         g.save("results_loop/" + item, save_all=True, loop=0)
 
     print("done!")
