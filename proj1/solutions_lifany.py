@@ -4,6 +4,7 @@ import pytorch3d
 import torch
 import sys
 import os
+import random
 from starter.utils import get_device, get_mesh_renderer, load_cow_mesh, unproject_depth_image
 import imageio
 import numpy as np
@@ -55,7 +56,6 @@ def render_360d(
     # worry about specifying the device in all of these functions.
     if device is None:
         device = get_device()
-    device = "cpu"
 
     # Get the renderer.
     renderer = get_mesh_renderer(image_size=image_size, device = device)
@@ -246,15 +246,18 @@ def visualize_pcd(
         fps = 15,
         angle_step = 5,
         dist = 7,
-        elev = 0
+        elev = 0,
+        upside_down = True
     ):
     if device is None:
         device = get_device()
     renderer = get_points_renderer(
     image_size=image_size, background_color=background_color
     )
-    
-    angle = torch.Tensor([0, 0, np.pi])
+    if upside_down:
+        angle = torch.Tensor([0, 0, np.pi])
+    else:
+        angle = torch.Tensor([0, 0, 0])
     r = pytorch3d.transforms.euler_angles_to_matrix(angle, "XYZ")
     res = []
     for angle in range(-180, 180, angle_step):
@@ -543,8 +546,61 @@ def fun(
     imageio.mimsave(save_path + fname, res1, fps=fps)
 
 ### Q 7 Sampling Points on Meshes ###
-def sample():
-    return
+def sample(
+        obj = "data/cow.obj",
+        save_path = save_path,
+        fname = "q7.gif",
+        image_size = 256,
+        device = None,
+        sample_size = 400
+    ):
+
+    if device is None:
+        device = get_device()
+    
+    verts, faces, aux = pytorch3d.io.load_obj(
+        obj,
+        device = device,
+        load_textures = True,
+        create_texture_atlas = True,
+        texture_atlas_size = 4,
+        texture_wrap = "repeat"
+    )
+    probs_list = np.zeros(verts.shape[0])
+    print(probs_list)
+
+    verts_face = verts[faces.verts_idx]
+    S = abs(0.5 * torch.bmm((verts_face[:, 1]-verts_face[:, 0]).unsqueeze(1), (verts_face[:, 1]-verts_face[:, -1]).unsqueeze(2)))
+    
+    for i in range(0, len(probs_list)):
+        probs_list[i] = S[i][0][0]
+
+    normalized_probs = (probs_list-np.min(probs_list))/(np.max(probs_list)-np.min(probs_list)) 
+
+    print(normalized_probs)
+
+    arr = np.arange(verts.shape[0])
+    np.random.shuffle(arr)
+
+    total = 0
+    selected_idx = []
+    for idx in arr:
+        random_weight = random.random()
+        if normalized_probs[idx] >= random_weight:
+            total += 1
+            selected_idx.append(idx)
+            if total >= sample_size:
+                break
+
+    res = verts_face[:, 0][selected_idx] + verts_face[:, 1][selected_idx] + verts_face[:, 2][selected_idx]
+
+    res = res.squeeze(0)
+    textures = torch.ones_like(res)
+
+    texture = ((res - res.min()) / (res.max() - res.min()))*torch.Tensor([0, 1, 0]) + ((res.max() - res) / (res.max() - res.min())) * torch.Tensor([0, 0, 1]) + ((res.max() - res) / (res.max() - res.min()))*torch.Tensor([0, 1, 0])
+    r = pytorch3d.structures.Pointclouds(points=[res], features = [texture])
+
+    return r
 
 if __name__ == "__main__":
     # Q 1.1
@@ -631,8 +687,21 @@ if __name__ == "__main__":
     # fun(image_size=1024)
 
     # Q 7
-    # sample()
-
+    # sample_pc = sample()
+    # visualize_pcd(
+    #     sample_pc,
+    #     image_size = 1024,
+    #     background_color = [0, 0, 0],
+    #     save_path = save_path,
+    #     fname = "q7.gif",
+    #     device = None,
+    #     fps = 15,
+    #     angle_step = 15,
+    #     dist = 25,
+    #     elev = 0,
+    #     upside_down = False
+    # )
+    
     # make gifs loop forever
     # gifs = os.listdir("results")
     # print(gifs)
@@ -641,4 +710,8 @@ if __name__ == "__main__":
     #     if ".gif" in item:
     #         g = Image.open("results/" + item)
     #         g.save("results_loop/" + item, save_all=True, loop=0)
+    item = "q7.gif"
+    g = Image.open("results/" + item)
+    g.save("results_loop/" + item, save_all=True, loop=0)
+
     print("done!")
