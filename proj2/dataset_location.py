@@ -1,5 +1,5 @@
 # specify the root location where u downloaded the dataset
-root_location = None
+root_location = "/home/lifan/Documents/datasets/r2n2_shapenet_dataset2"
 use_full_dataset = False
 dataset_name = (
     "r2n2_shapenet_dataset_full" if use_full_dataset else "r2n2_shapenet_dataset"

@@ -1,10 +1,13 @@
 import torch
 
 # define losses
-def voxel_loss(voxel_src,voxel_tgt):
+def voxel_loss(voxel_src,voxel_tgt, fit=False):
 	# voxel_src: b x h x w x d
 	# voxel_tgt: b x h x w x d
-	# loss = 
+	# https://pytorch.org/docs/stable/generated/torch.nn.BCELoss.html
+	m = torch.nn.Sigmoid()
+	lossclass = torch.nn.BCELoss()
+	loss = lossclass(m(voxel_src), voxel_tgt)
 	# implement some loss for binary voxel grids
 	return loss
 

@@ -9,7 +9,7 @@ from pytorch3d.ops import sample_points_from_meshes
 from pytorch3d.structures import Meshes
 import dataset_location
 import torch
-
+from visualizations import *
 
 
 
@@ -129,6 +129,10 @@ def train_model(args):
 
         # fitting
         fit_voxel(voxels_src, voxels_tgt, args)
+        # --
+        visualize_voxels(voxels_src, fname = "q1-1-src.gif")
+        visualize_voxels(voxels_tgt, fname = "q1-1-tgt.gif")
+        # --
 
 
     elif args.type == "point":
@@ -147,7 +151,7 @@ def train_model(args):
         mesh_tgt = Meshes(verts=[feed_cuda['verts']], faces=[feed_cuda['faces']])
 
         # fitting
-        fit_mesh(mesh_src, mesh_tgt, args)        
+        fit_mesh(mesh_src, mesh_tgt, args)     
 
 
     
