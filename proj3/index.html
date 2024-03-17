@@ -17,7 +17,6 @@
         <h4>0. Transmittance Calculation</h4>
 
         
-<<<<<<< HEAD
         <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/transmittance_calculation/figure1.png", style="width:70%; margin-left:15%">
         <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/transmittance.png", style="width:70%; margin-left:15%">
   
@@ -27,14 +26,6 @@
 
         <p></p>
 
-=======
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/transmittance_calculation/figure1.png", style="width:78%">
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/transmittance_calculation/figure1.png", style="width:78%">
-
-        <p> - Taking the derivative of the right hand side expression and letting that be zero, we get an expression with v_i and v_j on the left side, and move the constant intensity values to the right side. We can form a linear system A v  = b to solve for the v's. </p>
-        <p> - we form a matrix A containing all the v_i v_j's coefficients, and a column vector v from v_0 to v_numpixels.  We observe that for each vi pixel we are solving for, they are calculated 4 times for each of their neighbors v_j: top, bottom, left and right. Their coefficient is then 4. So we put a 4 in A's row, corresponding to the v_i's location. Similarly, for each neighbor v_j, we check whether or not they are in the mask, if they are, we put a -1 in A, else we add background intensity to the corresponding b element.</p>
-        
->>>>>>> d907addd5b3e2603267686d2ecc8c4629d1fe46e
         <h3>1. Blending</h3>
         <h4>1.1 Toy Problem</h4>
         <img src = "https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/expressions.png", style="width:60%">
