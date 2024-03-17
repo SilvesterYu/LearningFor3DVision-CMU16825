@@ -2,26 +2,24 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>CMU 16726 Learning Based Image Synthesis</title>
+        <title>CMU 16825 Learning for 3D Vision</title>
         <link rel="stylesheet" href="css/style.css">
+        <!-- <link rel="stylesheet" href="https://latex.now.sh/style.css"> -->
     </head>
+    
     <body class="#grad">
-        <h1>CMU 16726 Learning Based Image Synthesis</h1>
-        <h2> Assignment #2 - Gradient Domain Fusion </h2>
+        <h1>CMU 16825 Learning for 3D Vision</h1>
+        <h2> Assignment #3 - Volume Rendering, Neural Radiance Fields, Neural Surfaces </h2>
         <h4>Lifan Yu (lifany)</h4>
 
 
-        <h3>0. Project Overview</h3>
-        <h4>0.1 Background</h4>
-        <p>This project focuses on “Poisson blending”, gradient-domain processing, a simple technique to blend a part of an image, be it an object, an animal or a person, into a target background image.</p>
-        <p>In this project, the goal is to seamlessly blend the source image onto the target image, different from a simple copy and paste which creates noticeable edges.</p>
+        <h3>A. Neural Volume Rendering</h3>
+        <h4>0. Transmittance Calculation</h4>
+
         
-        <h4>0.2 Methods</h4>
-        <p>- We focus on gradients rather than the absolute pixel values because we want the image intensity between the source and target images to transition smoothly.</p>
-        <p>- We preserve the gradients of the area of the source image that we wish to copy paste, and based on the target image's values on the edges, we the and solve for the each pixel in this area.</p>
-        <p> - The equation to solve for is as follows. We treat each pixel in the image as a variable v that minnimizes the expression on the right side</p>
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/formula.png", style="width:78%">
-    
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/transmittance_calculation/figure1.png", style="width:78%">
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/transmittance_calculation/figure1.png", style="width:78%">
+
         <p> - Taking the derivative of the right hand side expression and letting that be zero, we get an expression with v_i and v_j on the left side, and move the constant intensity values to the right side. We can form a linear system A v  = b to solve for the v's. </p>
         <p> - we form a matrix A containing all the v_i v_j's coefficients, and a column vector v from v_0 to v_numpixels.  We observe that for each vi pixel we are solving for, they are calculated 4 times for each of their neighbors v_j: top, bottom, left and right. Their coefficient is then 4. So we put a 4 in A's row, corresponding to the v_i's location. Similarly, for each neighbor v_j, we check whether or not they are in the mask, if they are, we put a -1 in A, else we add background intensity to the corresponding b element.</p>
         

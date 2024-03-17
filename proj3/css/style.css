@@ -84,7 +84,8 @@ body h4 {
 p {
   font-family: "Lucida Handwriting";
   font-size: 1.1em;
-  margin-top: 20px;
+  margin-top: 30px;
+  line-height: 1.8;
   margin: 0.67em 0;
   color: rgb(252, 253, 253);
 }
@@ -326,6 +327,6 @@ body {
   background-repeat: no-repeat;
   min-height: 100vh;
   margin: 130;
-  width: 70%;
-  margin-left: 15%;
+  width: 80%;
+  margin-left: 10%;
 }
