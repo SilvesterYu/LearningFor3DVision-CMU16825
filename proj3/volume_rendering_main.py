@@ -98,6 +98,7 @@ def render_images(
 
         # TODO (Q1.3): Visualize xy grid using vis_grid
         if cam_idx == 0 and file_prefix == '':
+<<<<<<< HEAD
             img = vis_grid(xy_grid, image_size)
             plt.imsave('images/1.3_xygrid.png', img)
 
@@ -105,6 +106,13 @@ def render_images(
         if cam_idx == 0 and file_prefix == '':
             img = vis_rays(ray_bundle, image_size)
             plt.imsave('images/1.3_rays.png', img)
+=======
+            pass
+
+        # TODO (Q1.3): Visualize rays using vis_rays
+        if cam_idx == 0 and file_prefix == '':
+            pass
+>>>>>>> d907addd5b3e2603267686d2ecc8c4629d1fe46e
         
         # TODO (Q1.4): Implement point sampling along rays in sampler.py
         pass
@@ -364,8 +372,12 @@ def train_nerf(
                 imageio.mimsave('images/part_3.gif', [np.uint8(im * 255) for im in test_images])
 
 
+<<<<<<< HEAD
 # @hydra.main(config_path='./configs', config_name='sphere')
 @hydra.main(config_path='./configs', config_name='box')
+=======
+@hydra.main(config_path='./configs', config_name='sphere')
+>>>>>>> d907addd5b3e2603267686d2ecc8c4629d1fe46e
 def main(cfg: DictConfig):
     os.chdir(hydra.utils.get_original_cwd())
 

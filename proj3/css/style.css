@@ -201,7 +201,10 @@ img {
   border: 0;
   border-radius: 2px;
   width: 35%;
+<<<<<<< HEAD
   margin-left: 20%
+=======
+>>>>>>> d907addd5b3e2603267686d2ecc8c4629d1fe46e
 }
 
 svg:not(:root) {
