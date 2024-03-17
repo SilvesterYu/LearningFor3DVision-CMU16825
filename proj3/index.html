@@ -1,0 +1,214 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>CMU 16726 Learning Based Image Synthesis</title>
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body class="#grad">
+        <h1>CMU 16726 Learning Based Image Synthesis</h1>
+        <h2> Assignment #2 - Gradient Domain Fusion </h2>
+        <h4>Lifan Yu (lifany)</h4>
+
+
+        <h3>0. Project Overview</h3>
+        <h4>0.1 Background</h4>
+        <p>This project focuses on “Poisson blending”, gradient-domain processing, a simple technique to blend a part of an image, be it an object, an animal or a person, into a target background image.</p>
+        <p>In this project, the goal is to seamlessly blend the source image onto the target image, different from a simple copy and paste which creates noticeable edges.</p>
+        
+        <h4>0.2 Methods</h4>
+        <p>- We focus on gradients rather than the absolute pixel values because we want the image intensity between the source and target images to transition smoothly.</p>
+        <p>- We preserve the gradients of the area of the source image that we wish to copy paste, and based on the target image's values on the edges, we the and solve for the each pixel in this area.</p>
+        <p> - The equation to solve for is as follows. We treat each pixel in the image as a variable v that minnimizes the expression on the right side</p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/formula.png", style="width:78%">
+    
+        <p> - Taking the derivative of the right hand side expression and letting that be zero, we get an expression with v_i and v_j on the left side, and move the constant intensity values to the right side. We can form a linear system A v  = b to solve for the v's. </p>
+        <p> - we form a matrix A containing all the v_i v_j's coefficients, and a column vector v from v_0 to v_numpixels.  We observe that for each vi pixel we are solving for, they are calculated 4 times for each of their neighbors v_j: top, bottom, left and right. Their coefficient is then 4. So we put a 4 in A's row, corresponding to the v_i's location. Similarly, for each neighbor v_j, we check whether or not they are in the mask, if they are, we put a -1 in A, else we add background intensity to the corresponding b element.</p>
+        
+        <h3>1. Blending</h3>
+        <h4>1.1 Toy Problem</h4>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/expressions.png", style="width:60%">
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/solve.png", style="width:60%">
+
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/toy.png", style="width:60%">
+    
+
+
+        <h4>1.2 Poisson Blending </h4>
+        <p>- How it works is that we preserve the gradients of the area of the source image that we wish to copy paste, and based on the target image's values on the edges, we the and solve for the each pixel in this area.</p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/poisson.png", style="width:60%">
+ 
+        <p>- We are calculating 4 times v_i, so we are putting 4 into A matrix instead of 1 in the toy example. Other steps are teh same. </p>
+        <p> - This time the matrix is much bigger, so numpy's least squares solver couldn't handle. We need to first create A as a sparse scipy matrix and use scipy's sparse lineal algebra solver to solve for the least squares solution.</p>
+
+        <section>
+          <div class="row">
+
+              <div class="column2">
+                  <p> Source </p>
+                <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/data/source_01.jpg" style="width:100%">
+              </div>
+
+              <div class="column2">
+                  <p> Target </p>
+                <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/data/target_01.jpg" style="width:100%">
+              </div>
+
+              <div class="column">
+                <p> Poisson blend result  </p>
+              <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/poisson_blend.png"  style="width:120%">
+            </div>
+              
+      </section>
+
+      <h4> My favorite blending result:</h4>
+
+      <section>
+        <div class="row">
+
+            <div class="column2">
+                <p> Source </p>
+              <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/source_02.jpg" style="width:70%">
+            </div>
+
+            <div class="column2">
+                <p> Target </p>
+              <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/target_02.png" style="width:110%">
+            </div>
+            
+    </section>
+
+      <section>
+        <div class="row">
+
+            <div class="column">
+              <p> Poisson blend result  </p>
+            <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/blend1.png"  style="width:200%">
+          </div>
+            
+    </section>
+    <p>Since these two images have similar textures and similar colors, they blend quite well.</p>
+
+    <h4> Two more Poisson blending results:</h4>
+    <p> I took these photos in Schenley Park and CMU recently.</p>
+        <section>
+      <div class="row">
+
+          <div class="column2">
+              <p> Source </p>
+            <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/source_05.png" style="width:70%">
+          </div>
+
+          <div class="column2">
+              <p> Target </p>
+            <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/target_05.png" style="width:150%">
+          </div>
+          
+  </section>
+      <section>
+      <div class="row">
+
+          <div class="column">
+            <p> Poisson blend result  </p>
+          <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/blend_deer.png"  style="width:200%">
+        </div>
+
+
+          
+  </section>
+  <p> Poisson blending works well enough for these two images, but the deer's legs are a bit distorted int the result image due to the colors of the paths being drastically different from that of the snow. The snow has very light color comparing to the paths, and led to parts of the deer's legs that are pasted onto the snow area having much lighter color than the nearby parts pasted onto the path area.</p>
+
+  <h4> Where it doesn't work so well...</h4>
+
+  <p> I took these photos in the National Aviary and on the Andy Warhol Bridge</p>
+  <p> Poisson blending doesn't work so well on them.</p> 
+    <section>
+    <div class="row">
+
+        <div class="column2">
+            <p> Source </p>
+          <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/source_03.png" style="width:100%">
+        </div>
+
+        <div class="column2">
+            <p> Target </p>
+          <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/target_03.png" style="width:110%">
+        </div>
+        
+</section>
+
+
+  <section>
+    <div class="row">
+
+        <div class="column">
+          <p> Poisson blend result  </p>
+        <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/blend3.png"  style="width:200%">
+      </div>
+        
+</section>
+<p> - The source image segment is mostly red / pink, while the target image is mostly blue. The red channel in the target image has much lower values, therefore, the result is that the flamingo also became blue.</p>
+  <p>- We are using gradients to calculate the pasted segment's colors using the surrounding colors on the target image, therefore the color hue of the pasted segment will be heaviily influenced by the target image if their domminant colors differ a lot. Preserving gradients doesn't necessarily preserve the target image's original colors.</p>
+
+
+  
+        
+</section>
+      
+      
+
+        <h3>2. Bells & Whistles (Extra Points)</h3>
+        <h4>2.1 Mixed Gradients</h4>
+        <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/mixed_gradient.png"  style="width:70%">
+        <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/mixed_blend.png"  style="width:70%">
+                        <h4> blend a picture of writing on a plain background onto another image</h4>
+              <p> The source image is a picture of some Chinese caligraphy bookmarks I made, using quotes from ancient poems. The words selected mean "ambitions". The target image is a photo  of CMU I took.</p>
+              <section>
+                <div class="row">
+            
+                    <div class="column2">
+                        <p> Source </p>
+                      <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/source_04.png" style="width:70%">
+                    </div>
+            
+                    <div class="column2">
+                        <p> Target </p>
+                      <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/target_04.png" style="width:130%">
+                    </div>
+                    
+            </section>
+            
+              <section>
+                <div class="row">
+            
+                    <div class="column">
+                      <p> Mixed blend result  </p>
+                    <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/blend_word_mixed.png"  style="width:250%">
+                  </div>
+
+                </section>
+                <p> Comparing with the Poisson blend result, the mixed blend result looks better because it preserves the textures on the target image. The Poisson blend still has visible edges and the snow's texture isn't preserved near the words</p>
+              <section>
+                  <div class="row">
+              
+                      <div class="column">
+                        <p> Poisson blend result  </p>
+                      <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/blend_word_poisson.png"  style="width:250%">
+                    </div>
+  
+                  </section>
+
+        <h4>2.2 rgb2gray</h4>
+        <p> Preserve graidients as well as grayscale intensity</p>
+        <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/mixed_blend_rgb2gray.png"  style="width:70%">
+        <p>Original Image:</p>
+        <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/35.png"  style="width:30%">
+
+        <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/35.png"  style="width:70%">
+
+
+
+       
+        <link rel="stylesheet" href="css/style.css">
+    </body>
+</html>
