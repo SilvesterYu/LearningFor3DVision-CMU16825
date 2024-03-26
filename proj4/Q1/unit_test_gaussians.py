@@ -146,11 +146,7 @@ def run_test_3():
     dim = 128
     img_size = (dim, dim)
     R, T = look_at_view_transform(dist = dist, azim=75.0, elev=45.0)
-
-    print("focal length", 5.0 * dim/2.0)
-    print("principal point", ((dim/2, dim/2)))
-    
-          
+            
 
     camera = PerspectiveCameras(
         focal_length=5.0 * dim/2.0, in_ndc=False,

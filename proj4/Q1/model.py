@@ -334,110 +334,21 @@ class Gaussians:
         # HINT: Do note that means_2D have units of pixels. Hence, you must apply a
         # transformation that moves points in the world space to screen space.
         # means_2D = None  # (N, 2)
-        # proj_mat = camera.get_projection_transform().get_matrix()
-        # print("proj_mat", proj_mat)
-        # proj_matT = proj_mat.transpose(1, 2).contiguous()
-        # proj_matT = proj_matT[:, :3, :3]
-        # proj_matT[0, 2, 2] = 1
-        
-        '''
-        means_3D_cat = torch.cat((means_3D, torch.ones(means_3D.shape[0], 1)), 1)
-        world2viewRT = camera.get_full_projection_transform().get_matrix()
-        
-        index = torch.tensor([0, 1, 3])
-        world2viewRT = torch.cat((torch.index_select(world2viewRT, 1, torch.LongTensor([0, 1, 3])), torch.index_select(world2viewRT, 1, torch.LongTensor([2]))), dim=1)
 
-        print("world2view", world2viewRT)
-        
-        # means_2D = torch.matmul(means_3D_cat, proj_mat)
-        # print(means_3D.shape, world2viewRT.shape)
-        means_2D = torch.matmul(means_3D_cat, world2viewRT)
-
-        # print(means_2D[:, -1].unsqueeze(1))
-        print("raw means2D", means_2D)
-        
-        means_2D /= means_2D[:, -2].unsqueeze(1).clone()
-        means_2D += means_2D[:, -1].unsqueeze(1).clone()
-        means_2D = means_2D[:, :, :2]
-        print(means_2D)
-    
-        print("R", camera.R)
-        print("T", camera.T)
-        # RT = torch.cat((camera.R[0], camera.T[0]), 0)
-        # print("RT", RT)
-        
-        # print("R", camera.R)
-        # print("T", camera.T)
-        # RT = torch.cat((torch.transpose(camera.R[0], 1, 2), camera.T), 0)
-        # print("RT", RT)
-        '''
-        '''
-        cam_means_3D = torch.matmul(means_3D, torch.transpose(camera.R, 1, 2))
-        cam_means_3D += camera.T
-        print(cam_means_3D)
-
-        # proj_mat = camera.get_projection_transform().get_matrix()[:, :, :3]
-        # print("proj_mat", proj_mat)
-        # print("proj_matT", torch.transpose(proj_mat, 1, 2))
-
-        proj_mat = torch.Tensor([
-            [320.0, 0.0, 64.0],
-            [0.0, 320.0, 64.0],
-            [0.0, 0.0, 1.0]
-        ])
-
-        means_2D = torch.matmul(cam_means_3D, proj_mat)
-        means_2D[:, :2] /= means_2D[:, -1]
-        means_2D = means_2D[:, :, :2]
-        print("means2d", means_2D)
-        print("T", camera.T)
-
-        
-        '''
-        '''
-        world2viewRT = camera.get_full_projection_transform().get_matrix()
-        
-        index = torch.tensor([0, 1, 2, 3])
-        world2viewRT = torch.cat((torch.index_select(world2viewRT, 2, torch.LongTensor([0, 1, 3])), torch.index_select(world2viewRT, 2, torch.LongTensor([2]))), dim=2)
-        # world2viewRT = torch.index_select(world2viewRT, 2, index)
-        print("world2view", world2viewRT)
-
-        means_3D_cat = torch.cat((means_3D, torch.ones(means_3D.shape[0], 1)), 1)
-        means_2D = torch.matmul(means_3D_cat, world2viewRT)
-        print("means2d raw", means_2D)
-
-
-
-        test = camera.get_full_projection_transform().transform_points(means_3D)[:,0:2]
-
-        print("test", test)
-        means_2D[:, :, :2] /= means_2D[:, :, 2]
-        means_2D = means_2D[:, :, :2]
-        print("means2d", means_2D)
-        '''
         cam_means_3D = camera.get_world_to_view_transform().transform_points(means_3D)
-        # cam_means_3D = torch.matmul(means_3D, m)
-        print("cam means", cam_means_3D)
-        cam_means_3D = cam_means_3D[:, :]/-cam_means_3D[:, 2][:, None]
+        cam_means_3D = -cam_means_3D[:, :]/cam_means_3D[:, 2][:, None]
         cam_means_3D[:, 2] = 1.0
-        print("cam means2", cam_means_3D)
+
+        fx, fy = camera.focal_length[0][0].item(), camera.focal_length[0][1].item()
+        px, py = camera.principal_point[0][0].item(), camera.principal_point[0][1].item()
 
         proj_mat = torch.Tensor([
-            [320.0, 0.0, 64.0],
-            [0.0, 320.0, 64.0],
+            [fx, 0.0, px],
+            [0.0, fy, py],
             [0.0, 0.0, 1.0]
         ])
 
-        means_2D = proj_mat @ cam_means_3D[:, :].T
-        means_2D = means_2D[:2, :].T
-        print("means2d", means_2D)
-
-        
-
-
-
-
-
+        means_2D = torch.transpose(torch.matmul(proj_mat, torch.transpose(cam_means_3D, 0, 1))[:2], 0, 1)
 
         return means_2D
 
