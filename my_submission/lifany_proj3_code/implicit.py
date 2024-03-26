@@ -185,11 +185,11 @@ class SDFSurface(torch.nn.Module):
 
         self.sdfs=[]
         
-        self.sdfs.append(SphereSDF(center=torch.tensor([-1.0,1.0,1.0]).to('cuda:0'), radius=torch.tensor(0.0001).to('cuda:0')))
-        self.sdfs.append(SphereSDF(center=torch.tensor([-1.0,-1.0,1.0]).to('cuda:0'), radius=torch.tensor(0.0001).to('cuda:0')))
-        self.sdfs.append(SphereSDF(center=torch.tensor([1.0,-1.0,1.0]).to('cuda:0'), radius=torch.tensor(0.0001).to('cuda:0')))
+        self.sdfs.append(SphereSDF(center=torch.tensor([-1.0,1.0,1.0]).to('cuda:0'), radius=torch.tensor(0.001).to('cuda:0')))
+        self.sdfs.append(SphereSDF(center=torch.tensor([-1.0,-1.0,1.0]).to('cuda:0'), radius=torch.tensor(0.001).to('cuda:0')))
+        self.sdfs.append(SphereSDF(center=torch.tensor([1.0,-1.0,1.0]).to('cuda:0'), radius=torch.tensor(0.001).to('cuda:0')))
 
-        self.sdfs.append(SphereSDF(center=torch.tensor([1.0,1.0,1.0]).to('cuda:0'), radius=torch.tensor(0.0001).to('cuda:0')))
+        self.sdfs.append(SphereSDF(center=torch.tensor([1.0,1.0,1.0]).to('cuda:0'), radius=torch.tensor(0.001).to('cuda:0')))
 
 
     

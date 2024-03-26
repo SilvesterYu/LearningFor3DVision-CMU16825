@@ -604,167 +604,167 @@ def sample(
 
 if __name__ == "__main__":
     # Q 1.1
-    # render_360d(image_size = 1024)
+    render_360d(image_size = 1024)
 
     # Q 1.2
-    # dolly_zoom(
-    #     image_size=1024,
-    #     num_frames=30,
-    #     duration=3,
-    #     output_file=save_path + "q1_2.gif"
-    # )
+    dolly_zoom(
+        image_size=1024,
+        num_frames=30,
+        duration=3,
+        output_file=save_path + "q1_2.gif"
+    )
 
     # Q 2.1
-    # construct_mesh(image_size=1024, angle_step=3, fps=20)
+    construct_mesh(image_size=1024, angle_step=3, fps=20)
 
     # Q 2.2
-    # vertices_cube = torch.Tensor([
-    #     [-0.5, -1, 0],
-    #     [-0.5, 1, 0],
-    #     [-0.5, 1, 1],
-    #     [-0.5, -1, 1],
-    #     [0.5, -1, 0],
-    #     [0.5, 1, 0],
-    #     [0.5, 1, 1],
-    #     [0.5, -1, 1]
-    #     ])
-    # faces_cube = torch.Tensor([
-    #     [0, 1, 2],
-    #     [2, 3, 0],
-    #     [0, 1, 5],
-    #     [4, 5, 0],
-    #     [1, 2, 5],
-    #     [5, 6, 2],
-    #     [2, 3, 6],
-    #     [6, 7, 3],
-    #     [3, 0, 7],
-    #     [7, 4, 0],
-    #     [4, 5, 6],
-    #     [6, 7, 4]
-    # ])
-    # construct_mesh(vertices = vertices_cube, faces = faces_cube, fname = "q2_2.gif", image_size=1024, angle_step=3, fps=20)
+    vertices_cube = torch.Tensor([
+        [-0.5, -1, 0],
+        [-0.5, 1, 0],
+        [-0.5, 1, 1],
+        [-0.5, -1, 1],
+        [0.5, -1, 0],
+        [0.5, 1, 0],
+        [0.5, 1, 1],
+        [0.5, -1, 1]
+        ])
+    faces_cube = torch.Tensor([
+        [0, 1, 2],
+        [2, 3, 0],
+        [0, 1, 5],
+        [4, 5, 0],
+        [1, 2, 5],
+        [5, 6, 2],
+        [2, 3, 6],
+        [6, 7, 3],
+        [3, 0, 7],
+        [7, 4, 0],
+        [4, 5, 6],
+        [6, 7, 4]
+    ])
+    construct_mesh(vertices = vertices_cube, faces = faces_cube, fname = "q2_2.gif", image_size=1024, angle_step=3, fps=20)
 
     # Q 3 Re-texturing a mesh
-    # color1 = [0.2, 0.6, 0.2] # green
-    # color2 = [0.2, 0.4, 0.9] # blue
-    # render_360d(fname="q3.gif", image_size = 1024, color1=color1, color2=color2)
+    color1 = [0.2, 0.6, 0.2] # green
+    color2 = [0.2, 0.4, 0.9] # blue
+    render_360d(fname="q3.gif", image_size = 1024, color1=color1, color2=color2)
     
     # Q 4
     # top-left image
-    # angle1 = torch.Tensor([0, 0, np.pi/2])
-    # R1 = pytorch3d.transforms.euler_angles_to_matrix(angle1, "XYZ")
-    # render_cow(R_relative=R1, fname="q4_1.jpg")
+    angle1 = torch.Tensor([0, 0, np.pi/2])
+    R1 = pytorch3d.transforms.euler_angles_to_matrix(angle1, "XYZ")
+    render_cow(R_relative=R1, fname="q4_1.jpg")
 
     # top-right image
-    # T2 = torch.Tensor([0, 0, 2])
-    # render_cow(T_relative=T2, fname="q4_2.jpg")
+    T2 = torch.Tensor([0, 0, 2])
+    render_cow(T_relative=T2, fname="q4_2.jpg")
 
     # bottom-left image
-    # T3 = [0.5, -0.5, -0.05]
-    # render_cow(T_relative=T3, fname="q4_3.jpg")
+    T3 = [0.5, -0.5, -0.05]
+    render_cow(T_relative=T3, fname="q4_3.jpg")
 
     # bottom-right image
-    # angle4 = torch.Tensor([0, -np.pi/2, 0])
-    # R4 = pytorch3d.transforms.euler_angles_to_matrix(angle4, "XYZ")
-    # T4 = [3, 0, 3]
-    # render_cow(R_relative=R4, T_relative=T4, fname="q4_4.jpg")
+    angle4 = torch.Tensor([0, -np.pi/2, 0])
+    R4 = pytorch3d.transforms.euler_angles_to_matrix(angle4, "XYZ")
+    T4 = [3, 0, 3]
+    render_cow(R_relative=R4, T_relative=T4, fname="q4_4.jpg")
     
     # Q 5.1
-    # pcd1, pcd2, pcd3 = generate_pcd()
-    # visualize_pcd(pcd1, image_size = 1024, fname="q5_1_1.gif")
-    # visualize_pcd(pcd2, image_size = 1024, fname="q5_1_2.gif")
-    # visualize_pcd(pcd3, image_size = 1024, fname="q5_1_3.gif")
+    pcd1, pcd2, pcd3 = generate_pcd()
+    visualize_pcd(pcd1, image_size = 1024, fname="q5_1_1.gif")
+    visualize_pcd(pcd2, image_size = 1024, fname="q5_1_2.gif")
+    visualize_pcd(pcd3, image_size = 1024, fname="q5_1_3.gif")
 
     # Q 5.2
-    # torus(image_size = 1024, num_samples=800, device="cpu")
-    # custom_pointcloud(image_size = 1024, num_samples = 600, angle_step=5)
+    torus(image_size = 1024, num_samples=800, device="cpu")
+    custom_pointcloud(image_size = 1024, num_samples = 600, angle_step=5)
 
     # Q 5.3
-    # render_torus(image_size = 1024)   
-    # render_tori(image_size = 1024) 
+    render_torus(image_size = 1024)   
+    render_tori(image_size = 1024) 
 
     # Q 6
-    # fun(image_size=1024)
+    fun(image_size=1024)
 
     # Q 7
-    # sample_pc = sample(
-    #     sample_size=10
-    # )
-    # visualize_pcd(
-    #     sample_pc,
-    #     image_size = 1024,
-    #     background_color = [0, 0, 0],
-    #     save_path = save_path,
-    #     fname = "q7_10.gif",
-    #     device = None,
-    #     fps = 15,
-    #     angle_step = 15,
-    #     dist = 25,
-    #     elev = 0,
-    #     upside_down = False
-    # )
+    sample_pc = sample(
+        sample_size=10
+    )
+    visualize_pcd(
+        sample_pc,
+        image_size = 1024,
+        background_color = [0, 0, 0],
+        save_path = save_path,
+        fname = "q7_10.gif",
+        device = None,
+        fps = 15,
+        angle_step = 15,
+        dist = 25,
+        elev = 0,
+        upside_down = False
+    )
 
-    # sample_pc = sample(
-    # sample_size=100
-    # )
-    # visualize_pcd(
-    #     sample_pc,
-    #     image_size = 1024,
-    #     background_color = [0, 0, 0],
-    #     save_path = save_path,
-    #     fname = "q7_100.gif",
-    #     device = None,
-    #     fps = 15,
-    #     angle_step = 15,
-    #     dist = 25,
-    #     elev = 0,
-    #     upside_down = False
-    # )
+    sample_pc = sample(
+    sample_size=100
+    )
+    visualize_pcd(
+        sample_pc,
+        image_size = 1024,
+        background_color = [0, 0, 0],
+        save_path = save_path,
+        fname = "q7_100.gif",
+        device = None,
+        fps = 15,
+        angle_step = 15,
+        dist = 25,
+        elev = 0,
+        upside_down = False
+    )
 
-    # sample_pc = sample(
-    # sample_size=1000
-    # )
-    # visualize_pcd(
-    #     sample_pc,
-    #     image_size = 1024,
-    #     background_color = [0, 0, 0],
-    #     save_path = save_path,
-    #     fname = "q7_1000.gif",
-    #     device = None,
-    #     fps = 15,
-    #     angle_step = 15,
-    #     dist = 25,
-    #     elev = 0,
-    #     upside_down = False
-    # )
+    sample_pc = sample(
+    sample_size=1000
+    )
+    visualize_pcd(
+        sample_pc,
+        image_size = 1024,
+        background_color = [0, 0, 0],
+        save_path = save_path,
+        fname = "q7_1000.gif",
+        device = None,
+        fps = 15,
+        angle_step = 15,
+        dist = 25,
+        elev = 0,
+        upside_down = False
+    )
 
-    # sample_pc = sample(
-    # sample_size=10000
-    # )
-    # visualize_pcd(
-    #     sample_pc,
-    #     image_size = 1024,
-    #     background_color = [0, 0, 0],
-    #     save_path = save_path,
-    #     fname = "q7_10000.gif",
-    #     device = None,
-    #     fps = 15,
-    #     angle_step = 15,
-    #     dist = 25,
-    #     elev = 0,
-    #     upside_down = False
-    # )
+    sample_pc = sample(
+    sample_size=10000
+    )
+    visualize_pcd(
+        sample_pc,
+        image_size = 1024,
+        background_color = [0, 0, 0],
+        save_path = save_path,
+        fname = "q7_10000.gif",
+        device = None,
+        fps = 15,
+        angle_step = 15,
+        dist = 25,
+        elev = 0,
+        upside_down = False
+    )
 
-    # render_360d(fname = "q7_original.gif", fps = 15)
+    render_360d(fname = "q7_original.gif", fps = 15)
     
     # make gifs loop forever
-    # gifs = os.listdir("results")
-    # print(gifs)
-    # for item in gifs:
-    #     print(item)
-    #     if ".gif" in item:
-    #         g = Image.open("results/" + item)
-    #         g.save("results_loop/" + item, save_all=True, loop=0)
+    gifs = os.listdir("results")
+    print(gifs)
+    for item in gifs:
+        print(item)
+        if ".gif" in item:
+            g = Image.open("results/" + item)
+            g.save("results_loop/" + item, save_all=True, loop=0)
 
     gifs = os.listdir("results")
     print(gifs)

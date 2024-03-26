@@ -8,25 +8,30 @@ from model import SingleViewto3D
 from pytorch3d.datasets.r2n2.utils import collate_batched_R2N2
 from pytorch3d.ops import sample_points_from_meshes
 from r2n2_custom import R2N2
+from eval_model import *
 
 
 def get_args_parser():
     parser = argparse.ArgumentParser("Singleto3D", add_help=False)
     # Model parameters
     parser.add_argument("--arch", default="resnet18", type=str)
-    parser.add_argument("--lr", default=4e-4, type=float)
-    parser.add_argument("--max_iter", default=100000, type=int)
-    parser.add_argument("--batch_size", default=32, type=int)
-    parser.add_argument("--num_workers", default=4, type=int)
+    parser.add_argument("--lr", default=1e-3, type=float)
+    parser.add_argument("--max_iter", default=500, type=int)
+    parser.add_argument("--batch_size", default=64, type=int)
+    parser.add_argument("--num_workers", default=2, type=int)
     parser.add_argument(
         "--type", default="vox", choices=["vox", "point", "mesh"], type=str
     )
-    parser.add_argument("--n_points", default=1000, type=int)
+    parser.add_argument("--n_points", default=5000, type=int)
     parser.add_argument("--w_chamfer", default=1.0, type=float)
     parser.add_argument("--w_smooth", default=0.1, type=float)
-    parser.add_argument("--save_freq", default=2000, type=int)
+    parser.add_argument("--save_freq", default=100, type=int) # originally 2000
     parser.add_argument("--load_checkpoint", action="store_true")
     parser.add_argument('--load_feat', action='store_true') 
+    parser.add_argument('--device', default='cuda', type=str) 
+
+    parser.add_argument('--vis_freq', default=10, type=int)
+    
     return parser
 
 
@@ -102,6 +107,9 @@ def train_model(args):
         print(f"Succesfully loaded iter {start_iter}")
 
     print("Starting training !")
+    # --
+    baseline_f1 = 0.0
+    # --
     for step in range(start_iter, args.max_iter):
         iter_start_time = time.time()
 
@@ -129,7 +137,17 @@ def train_model(args):
         loss_vis = loss.cpu().item()
 
         if (step % args.save_freq) == 0 and step > 0:
-            print(f"Saving checkpoint at step {step}")
+            # --
+            # try:
+            # avg_f1 = evaluate_model(args)
+            # print("-"*50)
+            # print(avg_f1)
+            # except: 
+            #     continue
+            # if avg_f1 > baseline_f1:
+            #     baseline_f1 = avg_f1
+                # print(f"Saving checkpoint at step {step}, highest f1 score so far: ", avg_f1)
+                # --
             torch.save(
                 {
                     "step": step,

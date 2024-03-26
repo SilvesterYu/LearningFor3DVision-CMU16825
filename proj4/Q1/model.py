@@ -398,8 +398,15 @@ class Gaussians:
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation
         print("points2D, means2D, conv2D", points_2D.shape, means_2D.shape, cov_2D_inverse.shape)
-        power = None  # (N, H*W)
+        # power = None  # (N, H*W)
 
+        N = means_2D.shape[0]
+        HW = points_2D.shape[1]
+        power = torch.ones(N, HW)
+        for i in range(N):
+            for j in range(HW):
+                test = -(1/2) * (points_2D[0][j] - means_2D[i][0]) @ cov_2D_inverse[i] @ (points_2D[0][j] - means_2D[i][0])
+                power[i][j] = test
 
         return power
 

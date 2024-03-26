@@ -12,10 +12,15 @@ import mcubes
 import utils_vox
 import matplotlib.pyplot as plt 
 
+from torchvision.utils import save_image
+
+
+from visualizations import *
+
 def get_args_parser():
     parser = argparse.ArgumentParser('Singleto3D', add_help=False)
     parser.add_argument('--arch', default='resnet18', type=str)
-    parser.add_argument('--vis_freq', default=1000, type=int)
+    parser.add_argument('--vis_freq', default=800, type=int)
     parser.add_argument('--batch_size', default=1, type=int)
     parser.add_argument('--num_workers', default=0, type=int)
     parser.add_argument('--type', default='vox', choices=['vox', 'point', 'mesh'], type=str)
@@ -86,12 +91,17 @@ def evaluate(predictions, mesh_gt, thresholds, args):
     if args.type == "vox":
         voxels_src = predictions
         H,W,D = voxels_src.shape[2:]
+        # print(predictions.shape)
         vertices_src, faces_src = mcubes.marching_cubes(voxels_src.detach().cpu().squeeze().numpy(), isovalue=0.5)
         vertices_src = torch.tensor(vertices_src).float()
         faces_src = torch.tensor(faces_src.astype(int))
         mesh_src = pytorch3d.structures.Meshes([vertices_src], [faces_src])
+
+        if vertices_src.shape == torch.Size([0, 3]):
+            return False
+
         pred_points = sample_points_from_meshes(mesh_src, args.n_points)
-        pred_points = utils_vox.Mem2Ref(pred_points, H, W, D)
+        pred_points = utils_vox.Mem2Ref(pred_points.detach().cpu(), H, W, D)
     elif args.type == "point":
         pred_points = predictions.cpu()
     elif args.type == "mesh":
@@ -132,12 +142,12 @@ def evaluate_model(args):
 
     if args.load_checkpoint:
         checkpoint = torch.load(f'checkpoint_{args.type}.pth')
-        model.load_state_dict(checkpoint['model_state_dict'])
+        model.load_state_dict(checkpoint['model_state_dict'], strict=False)
         print(f"Succesfully loaded iter {start_iter}")
     
     print("Starting evaluating !")
     max_iter = len(eval_loader)
-    for step in range(start_iter, max_iter):
+    for step in range(1200, max_iter):
         iter_start_time = time.time()
 
         read_start_time = time.time()
@@ -153,14 +163,45 @@ def evaluate_model(args):
         if args.type == "vox":
             predictions = predictions.permute(0,1,4,3,2)
 
+        # print(predictions)
+        # print("____")
+        # print(mesh_gt)
         metrics = evaluate(predictions, mesh_gt, thresholds, args)
+        if metrics == False:
+            continue
+        
 
         # TODO:
-        # if (step % args.vis_freq) == 0:
-        #     # visualization block
-        #     #  rend = 
-        #     plt.imsave(f'vis/{step}_{args.type}.png', rend)
-      
+        if (step % args.vis_freq) == 0:
+            # visualization block
+            if args.type == "vox":
+                f1_05 = metrics['F1@0.050000'].float()
+                print("f1_05", type(f1_05), f1_05)
+                if f1_05 > 15:
+                    rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
+                    plt.imsave(f'results/vox/{step}_{args.type}.png', rend)
+                    visualize_voxels(feed_dict['voxels'].to(args.device)[0], fname = f'vox/{step}_{args.type}_truth_vox.gif')
+                    visualize_voxels(predictions[0], fname = f'vox/{step}_{args.type}.gif')
+                    visualize_mesh(mesh_gt, fname=f'vox/{step}_{args.type}_truth.gif')
+            elif args.type == "point":
+                f1_05 = metrics['F1@0.050000'].float()
+                print("f1_05", type(f1_05), f1_05)
+                if f1_05 < 80:
+                    rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
+                    plt.imsave(f'results/pt_ext/{step}_{args.type}.png', rend)
+                    points_gt = sample_points_from_meshes(mesh_gt, args.n_points)
+                    visualize_cloud(points_gt, fname = f'pt_ext/{step}_{args.type}_truth_pcd.gif')
+                    visualize_cloud(predictions, fname = f'pt_ext/{step}_{args.type}.gif')
+                    visualize_mesh(mesh_gt, fname=f'pt_ext/{step}_{args.type}_truth.gif')
+            elif args.type == "mesh":
+                f1_05 = metrics['F1@0.050000'].float()
+                print("f1_05", type(f1_05), f1_05)
+                if f1_05 > 90:
+                    rend = images_gt[0, ..., :3].detach().cpu().numpy().clip(0, 1)
+                    plt.imsave(f'results/meshes/{step}_{args.type}.png', rend)
+                    visualize_mesh(predictions, fname = f'meshes/{step}_{args.type}.gif')
+                    visualize_mesh(mesh_gt, fname=f'meshes/{step}_{args.type}_truth.gif')
+
 
         total_time = time.time() - start_time
         iter_time = time.time() - iter_start_time
@@ -178,6 +219,9 @@ def evaluate_model(args):
 
     save_plot(thresholds, avg_f1_score,  args)
     print('Done!')
+    # --
+    return avg_f1_score
+    # --
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Singleto3D', parents=[get_args_parser()])

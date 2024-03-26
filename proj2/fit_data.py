@@ -129,7 +129,7 @@ def train_model(args):
 
         # fitting
         fit_voxel(voxels_src, voxels_tgt, args)
-        # --
+        # -- q1.1
         visualize_voxels(voxels_src, fname = "q1-1-src.gif")
         visualize_voxels(voxels_tgt, fname = "q1-1-tgt.gif")
         # --
@@ -143,7 +143,11 @@ def train_model(args):
 
         # fitting
         fit_pointcloud(pointclouds_src, pointclouds_tgt, args)        
-    
+        # -- q1.2
+        visualize_cloud(pointclouds_src, fname = "q1-2-src.gif")
+        visualize_cloud(pointclouds_tgt, fname = "q1-2-tgt.gif")
+        # --
+
     elif args.type == "mesh":
         # initialization
         # try different ways of initializing the source mesh        
@@ -152,6 +156,10 @@ def train_model(args):
 
         # fitting
         fit_mesh(mesh_src, mesh_tgt, args)     
+        # -- q1.2
+        visualize_mesh(mesh_src, fname = "q1-3-src.gif")
+        visualize_mesh(mesh_tgt, fname = "q1-3-tgt.gif")
+        # --
 
 
     
