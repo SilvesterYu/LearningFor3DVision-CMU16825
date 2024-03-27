@@ -67,8 +67,8 @@ class Gaussians:
         self.pre_act_opacities = data["pre_act_opacities"]
 
         # [Q 1.3.1] NOTE: Uncomment spherical harmonics code for question 1.3.1
-        if data.get("spherical_harmonics") is not None:
-            self.spherical_harmonics = data["spherical_harmonics"]
+        # if data.get("spherical_harmonics") is not None:
+        #     self.spherical_harmonics = data["spherical_harmonics"]
 
         if self.device == "cuda":
             self.to_cuda()
@@ -255,7 +255,7 @@ class Gaussians:
         else:
 
             ### YOUR CODE HERE ###
-            Is = torch.eye(scales.size(1))
+            Is = torch.eye(scales.size(1)).to("cuda")
             scale_mats = (scales.unsqueeze(2).expand(*scales.size(), scales.size(1))) * Is
 
             rots = pytorch3d.transforms.quaternion_to_matrix(quats)
@@ -346,7 +346,7 @@ class Gaussians:
             [fx, 0.0, px],
             [0.0, fy, py],
             [0.0, 0.0, 1.0]
-        ])
+        ]).to("cuda")
 
         means_2D = torch.transpose(torch.matmul(proj_mat, torch.transpose(cam_means_3D, 0, 1))[:2], 0, 1)
 
@@ -401,12 +401,19 @@ class Gaussians:
         # power = None  # (N, H*W)
 
         N = means_2D.shape[0]
+        '''
         HW = points_2D.shape[1]
         power = torch.ones(N, HW)
         for i in range(N):
             for j in range(HW):
-                test = -(1/2) * (points_2D[0][j] - means_2D[i][0]) @ cov_2D_inverse[i] @ (points_2D[0][j] - means_2D[i][0])
-                power[i][j] = test
+                power[i][j] = -(1/2) * (points_2D[0][j] - means_2D[i][0]) @ cov_2D_inverse[i] @ (points_2D[0][j] - means_2D[i][0])
+        '''
+
+        points_2D_ = points_2D.unsqueeze(2)[0].repeat(N, 1, 1, 1)
+        means_2D_ = means_2D.unsqueeze(1)
+        cov_2D_inverse_ = cov_2D_inverse.unsqueeze(1)
+        power = (points_2D_ - means_2D_) @ cov_2D_inverse_ @ torch.transpose((points_2D_ - means_2D_), 2, 3)
+        power = (-1/2) * power.squeeze(-1).squeeze(-1)
 
         return power
 
@@ -446,7 +453,12 @@ class Scene:
         ### YOUR CODE HERE ###
         # HINT: You can use get the means of 3D Gaussians self.gaussians and calculate
         # the depth using the means and the camera
-        z_vals = None  # (N,)
+        # z_vals = None  # (N,)
+
+        means_3D = self.gaussians.means
+        cam_means_3D = camera.get_world_to_view_transform().transform_points(means_3D)
+        # print(cam_means_3D)
+        z_vals = cam_means_3D[:, -1]
 
         return z_vals
 
@@ -467,7 +479,11 @@ class Scene:
         Please refer to the README file for more details.
         """
         ### YOUR CODE HERE ###
-        idxs = None  # (N,)
+        # idxs = None  # (N,)
+
+        sorted, indices = torch.sort(z_vals)
+        mask = sorted >= 0
+        idxs = torch.masked_select(indices, mask).to(torch.int64)
 
         return idxs
 
@@ -503,18 +519,23 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
-        cov_2D_inverse = None  # (N, 2, 2) TODO: Verify shape
+        # cov_2D_inverse = None  # (N, 2, 2) TODO: Verify shape
+        cov_2D_inverse = self.gaussians.invert_cov_2D(cov_2D)
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
-        power = None  # (N, H*W)
+        # power = None  # (N, H*W)
+        power = self.gaussians.evaluate_gaussian_2D(points_2D, means_2D, cov_2D_inverse)
 
         # Computing exp(power) with some post processing for numerical stability
         exp_power = torch.where(power > 0.0, 0.0, torch.exp(power))
 
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation.
-        alphas = None  # (N, H*W)
+        # alphas = None  # (N, H*W)
+        opacities = opacities.unsqueeze(1)
+        alphas = opacities.repeat(1, points_2D.shape[1])
+        alphas = alphas * exp_power
         alphas = torch.reshape(alphas, (-1, H, W))  # (N, H, W)
 
         # Post processing for numerical stability
@@ -566,8 +587,15 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation.
-        transmittance = None  # (N, H, W)
-
+        # transmittance = None  # (N, H, W)
+        N = alphas.shape[0]
+        transmittance = torch.zeros(N, H, W).to("cuda")
+        for i in range(N):
+            # print(i, N)
+            transmittance[i] = one_minus_alphas[0]
+            for j in range(i):
+                transmittance[i] *= one_minus_alphas[j+1]
+            
         # Post processing for numerical stability
         transmittance = torch.where(transmittance < 1e-4, 0.0, transmittance)  # (N, H, W)
 
@@ -614,23 +642,23 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
-        means_2D = None  # (N, 2)
+        means_2D = self.gaussians.compute_means_2D(means_3D, camera)  # (N, 2)
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
-        cov_2D = None  # (N, 2, 2)
+        cov_2D = self.gaussians.compute_cov_2D(means_3D, quats, scales, camera, img_size)  # (N, 2, 2)
 
         # Step 2: Compute alpha maps for each gaussian
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
-        alphas = None  # (N, H, W)
+        alphas = self.compute_alphas(opacities, means_2D, cov_2D, img_size)  # (N, H, W)
 
         # Step 3: Compute transmittance maps for each gaussian
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
-        transmittance = None  # (N, H, W)
+        transmittance = self.compute_transmittance(alphas, start_transmittance)  # (N, H, W)
 
         # Some unsqueezing to set up broadcasting for vectorized implementation.
         # You can selectively comment these out if you want to compute things
@@ -644,15 +672,17 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation
-        image = None  # (H, W, 3)
+        image = colours * alphas * transmittance
+        image = torch.sum(image, dim = 0)  # (H, W, 3)
 
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
-        depth = None  # (H, W, 1)
+        depth = z_vals * alphas * transmittance
+        depth = torch.sum(depth, dim = 0)  # (H, W, 1)
 
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
-        mask = None  # (H, W, 1)
+        mask = depth > 0  # (H, W, 1)
 
         final_transmittance = transmittance[-1, ..., 0].unsqueeze(0)  # (1, H, W)
         return image, depth, mask, final_transmittance
@@ -741,6 +771,7 @@ class Scene:
             mask = torch.zeros((H, W, 1), dtype=torch.float32).to(D)
 
             for b_idx in range(num_mini_batches):
+                print(b_idx, num_mini_batches)
 
                 quats_ = quats[b_idx * per_splat: (b_idx+1) * per_splat]
                 scales_ = scales[b_idx * per_splat: (b_idx+1) * per_splat]
@@ -748,7 +779,9 @@ class Scene:
                 colours_ = colours[b_idx * per_splat: (b_idx+1) * per_splat]
                 means_3D_ = means_3D[b_idx * per_splat: (b_idx+1) * per_splat]
                 opacities_ = opacities[b_idx * per_splat: (b_idx+1) * per_splat]
-
+                
+                if z_vals_.shape[0] != per_splat:
+                    break
                 # Get image, depth and mask via splatting
                 image_, depth_, mask_, start_transmittance = self.splat(
                     camera, means_3D_, z_vals_, quats_, scales_, colours_,
