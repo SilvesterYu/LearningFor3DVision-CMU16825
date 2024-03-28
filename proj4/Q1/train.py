@@ -35,12 +35,12 @@ def setup_optimizer(gaussians):
     # fast with the default settings.
     # HINT: Consider setting different learning rates for different sets of parameters.
     parameters = [
-        {'params': [gaussians.pre_act_opacities], 'lr': 0.0001, "name": "opacities"},
-        {'params': [gaussians.pre_act_scales], 'lr': 0.0001, "name": "scales"},
-        {'params': [gaussians.colours], 'lr': 0.0001, "name": "colours"},
-        {'params': [gaussians.means], 'lr': 0.0001, "name": "means"},
+        {'params': [gaussians.pre_act_opacities], 'lr': 0.005, "name": "opacities"},
+        {'params': [gaussians.pre_act_scales], 'lr': 0.005, "name": "scales"},
+        {'params': [gaussians.colours], 'lr': 0.001, "name": "colours"},
+        {'params': [gaussians.means], 'lr': 0.001, "name": "means"},
     ]
-    optimizer = torch.optim.Adam(parameters, lr=0.00001, eps=1e-15)
+    optimizer = torch.optim.Adam(parameters, lr=0.001, eps=1e-9)
     # optimizer = None
 
     return optimizer
@@ -163,6 +163,10 @@ def run_training(args):
                 (64, 64)
             )
             viz_frames.append(viz_frame)
+            print("Rendered ", itr, "th img")
+            viz_frame_npy = (np.clip(viz_frame, 0.0, 1.0) * 255.0).astype(np.uint8)
+            viz_frame_npy = Image.fromarray(viz_frame_npy)
+            viz_frame_npy.save("viz_frame.png")
 
     print("[*] Training Completed.")
 
@@ -211,8 +215,8 @@ def run_training(args):
 
         pred_npy = pred_img.detach().cpu().numpy()
         pred_npy = (np.clip(pred_npy, 0.0, 1.0) * 255.0).astype(np.uint8)
-        pred_npy_img = Image.fromarray(pred_npy)
-        pred_npy_img.save("this.png")
+        # pred_npy_img = Image.fromarray(pred_npy)
+        # pred_npy_img.save("this.png")
         frames.append(pred_npy)
 
     # Saving renderings

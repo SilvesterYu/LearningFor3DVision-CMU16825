@@ -665,10 +665,6 @@ class Scene:
         # HINT: Refer to README for a relevant equation
         image = colours * alphas * transmittance
         image = torch.sum(image, dim = 0)  # (H, W, 3)
-        pred_npy = image.detach().cpu().numpy()
-        pred_npy = (np.clip(pred_npy, 0.0, 1.0) * 255.0).astype(np.uint8)
-        pred_npy_img = Image.fromarray(pred_npy)
-        pred_npy_img.save("imgfromsplat.png")
         
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
