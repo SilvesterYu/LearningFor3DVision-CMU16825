@@ -403,13 +403,6 @@ class Gaussians:
         # power = None  # (N, H*W)
 
         N = means_2D.shape[0]
-        '''
-        HW = points_2D.shape[1]
-        power = torch.ones(N, HW)
-        for i in range(N):
-            for j in range(HW):
-                power[i][j] = -(1/2) * (points_2D[0][j] - means_2D[i][0]) @ cov_2D_inverse[i] @ (points_2D[0][j] - means_2D[i][0])
-        '''
 
         points_2D_ = points_2D.unsqueeze(2)[0].repeat(N, 1, 1, 1)
         means_2D_ = means_2D.unsqueeze(1)
@@ -459,7 +452,6 @@ class Scene:
 
         means_3D = self.gaussians.means
         cam_means_3D = camera.get_world_to_view_transform().transform_points(means_3D)
-        # print(cam_means_3D)
         z_vals = cam_means_3D[:, -1]
 
         return z_vals
@@ -537,14 +529,7 @@ class Scene:
         # alphas = None  # (N, H*W)
         opacities = opacities.unsqueeze(1)
         alphas = opacities.repeat(1, points_2D.shape[1])
-        alphas = alphas * exp_power
-
-        # for i in range(alphas.shape[0]):
-        #     for j in range(alphas.shape[1]):
-        #         if alphas[i][j] > 0:
-        #             print(alphas[i][j])
-        # print("-"*100)
-        
+        alphas = alphas * exp_power        
         alphas = torch.reshape(alphas, (-1, H, W))  # (N, H, W)
 
         # Post processing for numerical stability
