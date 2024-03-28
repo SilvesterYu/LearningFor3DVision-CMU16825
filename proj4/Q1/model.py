@@ -1,6 +1,7 @@
 import math
 import torch
 import numpy as np
+from PIL import Image
 
 from typing import Tuple, Optional
 import pytorch3d
@@ -244,7 +245,7 @@ class Gaussians:
             # cov_3D = None  # (N, 3, 3)
             # https://stackoverflow.com/questions/47372508/how-to-construct-a-3d-tensor-where-every-2d-sub-tensor-is-a-diagonal-matrix-in-p
             scales = scales.repeat(1, 3)
-            Is = torch.eye(scales.size(1))
+            Is = torch.eye(scales.size(1)).cuda()
             scale_mats = (scales.unsqueeze(2).expand(*scales.size(), scales.size(1))) * Is
 
             rots = pytorch3d.transforms.quaternion_to_matrix(quats)
@@ -399,7 +400,7 @@ class Gaussians:
         """
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation
-        print("points2D, means2D, conv2D", points_2D.shape, means_2D.shape, cov_2D_inverse.shape)
+        # print("points2D, means2D, conv2D", points_2D.shape, means_2D.shape, cov_2D_inverse.shape)
         # power = None  # (N, H*W)
 
         N = means_2D.shape[0]
@@ -529,7 +530,7 @@ class Scene:
         # alphas = None  # (N, H*W)
         opacities = opacities.unsqueeze(1)
         alphas = opacities.repeat(1, points_2D.shape[1])
-        alphas = alphas * exp_power        
+        alphas = alphas * exp_power 
         alphas = torch.reshape(alphas, (-1, H, W))  # (N, H, W)
 
         # Post processing for numerical stability
@@ -664,6 +665,10 @@ class Scene:
         # HINT: Refer to README for a relevant equation
         image = colours * alphas * transmittance
         image = torch.sum(image, dim = 0)  # (H, W, 3)
+        pred_npy = image.detach().cpu().numpy()
+        pred_npy = (np.clip(pred_npy, 0.0, 1.0) * 255.0).astype(np.uint8)
+        pred_npy_img = Image.fromarray(pred_npy)
+        pred_npy_img.save("imgfromsplat.png")
         
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
@@ -762,7 +767,8 @@ class Scene:
             mask = torch.zeros((H, W, 1), dtype=torch.float32).to(D)
 
             for b_idx in range(num_mini_batches):
-                print("batch ", b_idx, " in ", num_mini_batches)
+                torch.cuda.empty_cache()
+                # print("batch ", b_idx, " in ", num_mini_batches)
 
                 quats_ = quats[b_idx * per_splat: (b_idx+1) * per_splat]
                 scales_ = scales[b_idx * per_splat: (b_idx+1) * per_splat]
