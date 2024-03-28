@@ -23,193 +23,438 @@
         <h4> 1. Differentiable Volume Rendering </h4>
         <h4> 1.3 Ray sampling </h4>
 
+                              <section>
+                <div class="row">
+      
+                    <div class="column2", style="margin-left: 25%">
+                        <p> xygrid </p>
+                        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/images/1.3_xygrid.png", style="width:100%">
+
+                          </div>
+      
+                    <div class="column2">
+                        <p> rays </p>
+                        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/images/1.3_rays.png", style="width:100%">
+                      </div>
+      
+                
+            </section>
 
         <p></p>
 
-        <h3>1. Blending</h3>
-        <h4>1.1 Toy Problem</h4>
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/expressions.png", style="width:60%">
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/solve.png", style="width:60%">
-
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/toy.png", style="width:60%">
-    
-
-
-        <h4>1.2 Poisson Blending </h4>
-        <p>- How it works is that we preserve the gradients of the area of the source image that we wish to copy paste, and based on the target image's values on the edges, we the and solve for the each pixel in this area.</p>
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/poisson.png", style="width:60%">
- 
-        <p>- We are calculating 4 times v_i, so we are putting 4 into A matrix instead of 1 in the toy example. Other steps are teh same. </p>
-        <p> - This time the matrix is much bigger, so numpy's least squares solver couldn't handle. We need to first create A as a sparse scipy matrix and use scipy's sparse lineal algebra solver to solve for the least squares solution.</p>
+        <h4>1.4 Point sampling</h4>
 
         <section>
           <div class="row">
 
-              <div class="column2">
-                  <p> Source </p>
-                <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/data/source_01.jpg" style="width:100%">
-              </div>
+              <div class="column2", style="margin-left: 37.5%">
+                  <p> sampled </p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/images/sampled.png", style="width:100%">
 
-              <div class="column2">
-                  <p> Target </p>
-                <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/data/target_01.jpg" style="width:100%">
-              </div>
+                    </div>
 
-              <div class="column">
-                <p> Poisson blend result  </p>
-              <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/poisson_blend.png"  style="width:120%">
-            </div>
-              
+          
       </section>
 
-      <h4> My favorite blending result:</h4>
+      <h4>1.5. Volume rendering</h4>
+
 
       <section>
         <div class="row">
 
-            <div class="column2">
-                <p> Source </p>
-              <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/source_02.jpg" style="width:70%">
-            </div>
+            <div class="column2", style="margin-left: 25%">
+                <p>  </p>
+                <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/images/1.5_depth_viz.png", style="width:100%">
+
+                  </div>
 
             <div class="column2">
-                <p> Target </p>
-              <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/target_02.png" style="width:110%">
-            </div>
-            
-    </section>
+                <p>  </p>
+                <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_1_.gif", style="width:100%">
+              </div>
 
-      <section>
-        <div class="row">
-
-            <div class="column">
-              <p> Poisson blend result  </p>
-            <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/blend1.png"  style="width:200%">
-          </div>
-            
-    </section>
-    <p>Since these two images have similar textures and similar colors, they blend quite well.</p>
-
-    <h4> Two more Poisson blending results:</h4>
-    <p> I took these photos in Schenley Park and CMU recently.</p>
-        <section>
-      <div class="row">
-
-          <div class="column2">
-              <p> Source </p>
-            <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/source_05.png" style="width:70%">
-          </div>
-
-          <div class="column2">
-              <p> Target </p>
-            <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/target_05.png" style="width:150%">
-          </div>
-          
-  </section>
-      <section>
-      <div class="row">
-
-          <div class="column">
-            <p> Poisson blend result  </p>
-          <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/blend_deer.png"  style="width:200%">
-        </div>
-
-
-          
-  </section>
-  <p> Poisson blending works well enough for these two images, but the deer's legs are a bit distorted int the result image due to the colors of the paths being drastically different from that of the snow. The snow has very light color comparing to the paths, and led to parts of the deer's legs that are pasted onto the snow area having much lighter color than the nearby parts pasted onto the path area.</p>
-
-  <h4> Where it doesn't work so well...</h4>
-
-  <p> I took these photos in the National Aviary and on the Andy Warhol Bridge</p>
-  <p> Poisson blending doesn't work so well on them.</p> 
-    <section>
-    <div class="row">
-
-        <div class="column2">
-            <p> Source </p>
-          <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/source_03.png" style="width:100%">
-        </div>
-
-        <div class="column2">
-            <p> Target </p>
-          <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/target_03.png" style="width:110%">
-        </div>
         
-</section>
+    </section>
+
+    <h4>2. Optimizing a basic implicit volume</h4>
+    <h4>2.1. Random ray sampling</h4>
+
+    <p>Box center: (0.2502, 0.2506, -0.0005)</p>
+      
+    <p>Box side lengths: (2.0051, 1.5035, 1.5033)</p>
 
 
+    <section>
+          <div class="row">
+
+              <div class="column2", style="margin-left: 37.5%">
+                  <p>  </p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_2.gif", style="width:100%">
+
+                    </div>
+
+          
+      </section>
+    
+
+    <h4>3. Optimizing a Neural Radiance Field (NeRF)</h4>
+    <p>The result below is from a NeRF MLP that does not handle view dependence yet. It uses ReLU activation to map the first network output to density and Sigmoid activation to map the remaining raw network outputs to color, and HarmonicEmbedding for better quality.</p>
+
+
+    <section>
+      <div class="row">
+
+          <div class="column2", style="margin-left: 37.5%">
+              <p>  </p>
+              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_3_lowres.gif", style="width:100%">
+
+                </div>
+
+      
+  </section>
+
+  <h4>4. NeRF Extras</h4>
+  <h4>4.1 View Dependence</h4>
+  <p> Tradeoffs: Using view dependence gave more realistic results, as color is predicted on position and ray direction. Ray direction embedding is also used for color prediction, instead of position only. This is can produce much better quality renderings for objects that show drastically different surface colors under different views, The result is shown below, and we can see that the light reflections on the somewhat metalic surface looks realistic.</p>
+
+  <p> However, using view dependence involves a risk of overfitting to the training images, say, if the training dataset is small and doesn't have sufficient view points, or if the model is designed to heavily rely on the view direction.</p>
+
+  <p> Therefore, we need a large dataset with diverse views, and a model that generalizes well.</p>
+    
   <section>
     <div class="row">
 
-        <div class="column">
-          <p> Poisson blend result  </p>
-        <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/blend3.png"  style="width:200%">
-      </div>
-        
+        <div class="column2", style="margin-left: 37.5%">
+            <p>  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_3_view.gif", style="width:100%">
+
+              </div>
 </section>
-<p> - The source image segment is mostly red / pink, while the target image is mostly blue. The red channel in the target image has much lower values, therefore, the result is that the flamingo also became blue.</p>
-  <p>- We are using gradients to calculate the pasted segment's colors using the surrounding colors on the target image, therefore the color hue of the pasted segment will be heaviily influenced by the target image if their domminant colors differ a lot. Preserving gradients doesn't necessarily preserve the target image's original colors.</p>
-
-
-  
-        
-</section>
-      
-      
-
-        <h3>2. Bells & Whistles (Extra Points)</h3>
-        <h4>2.1 Mixed Gradients</h4>
-        <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/mixed_gradient.png"  style="width:70%">
-        <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/mixed_blend.png"  style="width:70%">
-                        <h4> blend a picture of writing on a plain background onto another image</h4>
-              <p> The source image is a picture of some Chinese caligraphy bookmarks I made, using quotes from ancient poems. The words selected mean "ambitions". The target image is a photo  of CMU I took.</p>
-              <section>
-                <div class="row">
-            
-                    <div class="column2">
-                        <p> Source </p>
-                      <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/source_04.png" style="width:70%">
-                    </div>
-            
-                    <div class="column2">
-                        <p> Target </p>
-                      <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/target_04.png" style="width:130%">
-                    </div>
-                    
-            </section>
-            
-              <section>
-                <div class="row">
-            
-                    <div class="column">
-                      <p> Mixed blend result  </p>
-                    <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/blend_word_mixed.png"  style="width:250%">
-                  </div>
-
-                </section>
-                <p> Comparing with the Poisson blend result, the mixed blend result looks better because it preserves the textures on the target image. The Poisson blend still has visible edges and the snow's texture isn't preserved near the words</p>
-              <section>
-                  <div class="row">
-              
-                      <div class="column">
-                        <p> Poisson blend result  </p>
-                      <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/blend_word_poisson.png"  style="width:250%">
-                    </div>
-  
-                  </section>
-
-        <h4>2.2 rgb2gray</h4>
-        <p> Preserve graidients as well as grayscale intensity</p>
-        <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/mixed_blend_rgb2gray.png"  style="width:70%">
-        <p>Original Image:</p>
-        <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/custom_data/35.png"  style="width:30%">
-
-        <img src="https://raw.githubusercontent.com/SilvesterYu/CMU16726-LearningBasedImageSynthesis/main/lifany_code_proj2/results/35.png"  style="width:70%">
-
-
-
        
+
+<h3>B. Neural Surface Rendering</h3>
+<h4>5. Sphere Tracing</h4>
+<p>Iteratively update points, starting from the origins, and adding distance to the closest surface multiplied with the direction of the ray.</p>
+
+<p> A mask with the same batch dimension as the ray origins is maintained to mark whicih rays already have a distance less than the threshold 1e-6. The loop ends when all rays have distance below that threshold or when we have reached the maximum number of iterations.</p>
+
+<section>
+  <div class="row">
+
+      <div class="column2", style="margin-left: 37.5%">
+          <p>  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/3df3018739d08c9fe519e5cbfd0ba4a1c3de6ffa/proj3/results/part_5.gif", style="width:100%">
+
+            </div>
+</section>
+
+
+
+<h4>6. Optimizing a Neural SDF</h4>
+
+<section>
+  <div class="row">
+
+      <div class="column2", style="margin-left: 25%">
+          <p> part6 input </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_6_input.gif", style="width:100%">
+
+            </div>
+
+      <div class="column2">
+          <p> part 6 result </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_6.gif", style="width:100%">
+        </div>
+
+  
+</section>
+
+<p></p>
+
+<p> Eikonal loss here is: torch.mean(torch.square(torch.norm(gradients, dim = 1, keepdim = True) - 1))
+</p>
+
+<p> MLP structure:</p>
+
+<p>- Using HarmonicEmbedding for the input</p>
+
+<p>- 7 fully connected layers, with a ReLU activation function on each layer except the final one</p>
+
+<p>- The 4th layer has a skip connection</p>
+
+
+<h4>7. VolSDF</h4>
+<p> Alpha: constant density</p>
+<p> Beta: the smoothness index with which alpha increases at the boundary</p>
+<p> ------------------ </p>
+<p>1. How does high beta bias your learned SDF? What about low beta?</p>
+<p>A high beta will let the density decrease slower near the boundaries, creating more blurred rendering results. A low beta will let the SDF decrease abruptly, creating sharper rendering results. High beta allows more accurate prediction of lighting, and makes the rendering look more realistic to an extent. </p>
+<p> ------------------ </p>
+<p>2. Would an SDF be easier to train with volume rendering and low beta or high beta? Why?</p>
+<p> SDF is easier to train using higher beta. This is because the smoother the SDF is, the easier it is to optimize using the gradients. </p>
+<p> ------------------ </p>
+<p>3. Would you be more likely to learn an accurate surface with high beta or low beta? Why?</p>
+<p>Low beta is better for learning an accurate surface. Sharper SDF captures surface details and can better represent objects with sharper shapes or detailed surface shapes. When beta is too high, the rendering becomes too blurry and the accuracy of shape drops. However, high beta allows more accurate prediction of lighting, and makes the surface colors look more realistic to an extent. We should keep the tradeoffs in mind.</p>
+<h4>Hyperparameter tuning</h4>
+<p> Test with different beta, keeping alpha = 10, we find that the best beta is 0.05.</p>
+ <p>If beta is too large, the rendering becomes too blurry.</p>
+
+ <section>
+  <div class="row">
+
+      <div class="column2", style="margin-left: 25%">
+          <p> alpha = 10, </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_a10b0-1.gif", style="width:100%">
+
+            </div>
+
+      <div class="column2">
+          <p> beta = 0.01 </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_a19b0-1.gif", style="width:100%">
+        </div>
+
+  
+</section>
+
+ <section>
+  <div class="row">
+
+      <div class="column2", style="margin-left: 25%">
+          <p> alpha = 10, </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_a10b0-5.gif", style="width:100%">
+
+            </div>
+
+      <div class="column2">
+          <p> beta = 0.05 </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_a10b0-5.gif", style="width:100%">
+        </div>
+
+  
+</section>
+
+<section>
+  <div class="row">
+
+      <div class="column2", style="margin-left: 25%">
+          <p> alpha = 10, </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_a10b1.gif", style="width:100%">
+
+            </div>
+
+      <div class="column2">
+          <p> beta = 0.1 </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_a10b1.gif", style="width:100%">
+        </div>
+
+  
+</section>
+
+<p> Test with different alpha, keeping beta = 0.05, we find that the best alpha is 25.</p>
+<p> If the alpha is too small, the density is more spread-out, and we might fail to capture details </p>
+
+<section>
+
+  <div class="row">
+  
+    <div class="column2", style="margin-left: 25%">
+        <p> alpha = 1</p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_a1.gif", style="width:100%">
+  
+          </div>
+  
+    <div class="column2">
+        <p> beta = 0.05 </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_a1.gif", style="width:100%">
+      </div>
+  
+  
+  </section>
+
+<section>
+
+<div class="row">
+
+  <div class="column2", style="margin-left: 25%">
+      <p> alpha = 25,</p>
+      <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_a25.gif", style="width:100%">
+
+        </div>
+
+  <div class="column2">
+      <p> beta = 0.05 </p>
+      <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_a25.gif", style="width:100%">
+    </div>
+
+
+</section>
+
+<section>
+<div class="row">
+
+  <div class="column2", style="margin-left: 25%">
+      <p> alpha = 50,</p>
+      <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_a50.gif", style="width:100%">
+
+        </div>
+
+  <div class="column2">
+      <p> beta = 0.05 </p>
+      <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_a50.gif", style="width:100%">
+    </div>
+
+
+</section>
+
+
+<h4>8. Neural Surface Extras</h4>
+<h4>8.1. Render a Large Scene with Sphere Tracing</h4>
+<p> Rendering more spheres</p>
+<section>
+  <div class="row">
+
+      <div class="column2", style="margin-left: 37.5%">
+          <p>  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/spheres.gif", style="width:100%">
+
+            </div>
+</section>
+
+
+<h4>8.2 Fewer Training Views</h4>
+<p> Here I modified train_idx in dataset.py to decrease the number of views.</p>
+<p> From the results we see that NERF generally has more detailed and accurate rendering results. However, when the number of views is extremely limited, VolSDF performs better than NERF.</p>
+<p> 20 views</p>
+<section>
+  <div class="row">
+    <div class="column2", style="margin-left: 11%">
+      <p> geometry</p>
+      <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_view20.gif", style="width:100%">
+
+        </div>
+  
+    <div class="column2">
+        <p> NERF </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_3_nerf20.gif", style="width:100%">
+  
+          </div>
+  
+    <div class="column2">
+        <p> VolSDF </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_view20.gif", style="width:100%">
+      </div>
+      </div>
+  </secion>
+
+      <p></p>
+      <p> 10 views</p>
+      <section>
+        <div class="row">
+          <div class="column2", style="margin-left: 11%">
+            <p> geometry</p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_view10.gif", style="width:100%">
+      
+              </div>
+          <div class="column2">
+              <p>NERF </p>
+              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_3_nerf10.gif", style="width:100%">
+        
+                </div>
+        
+          <div class="column2">
+              <p> VolSDF </p>
+              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_view10.gif", style="width:100%">
+            </div>
+
+            
+          </section>
+
+
+             <p> 5 views</p>
+          <secion>
+              <div class="row">
+                <div class="column2", style="margin-left: 11%">
+                  <p> geometry</p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_view5.gif", style="width:100%">
+            
+                    </div>
+              
+                <div class="column2", style="margin-left:">
+                    <p> NERF</p>
+                    <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_3_nerf5.gif", style="width:100%">
+              
+                      </div>
+              
+                <div class="column2">
+                    <p> VolSDF </p>
+                    <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_view5.gif", style="width:100%">
+                  </div>
+  
+  
+  </section>
+
+
+
+<h4>8.3 Alternate SDF to Density Conversions</h4>
+  <p> The ‘naive’ solution from the NeuS paper is implemented here. The probability distribution function S density introduced in the paper has the formula:</p>
+  
+  <section>
+    <div class="row">
+  
+        <div class="column2", style="margin-left: 37.5%">
+            <p>  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/s-dens.png", style="width:100%">
+  
+              </div>
+  </section>
+<p> Varying s value, I got the following results: </p>
+
+<section>
+  <p> s = 40</p>
+  <div class="row">
+
+  
+    <div class="column2", style="margin-left: 25%">
+        <p> </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_s40.gif", style="width:100%">
+  
+          </div>
+  
+    <div class="column2">
+        <p> </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_s40.gif", style="width:100%">
+      </div>
+  
+  
+  </section>
+
+  <section>
+    <p> s = 20</p>
+    <div class="row">
+  
+    
+      <div class="column2", style="margin-left: 25%">
+          <p> </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_s20.gif", style="width:100%">
+    
+            </div>
+    
+      <div class="column2">
+          <p> </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_s20.gif", style="width:100%">
+        </div>
+    
+    
+    </section>
+
+
+  
+
+
+ <p>Larger s made the rendering sharper, but also less smooth. It generally performs worse than Q7's VolSDF. </p>
+
+
+
         <link rel="stylesheet" href="css/style.css">
     </body>
 </html>
