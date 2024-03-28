@@ -78,3 +78,9 @@ that = torch.randn(5, 1, 1, 3)
 res = that * this * this
 print(res)
 print(res.shape)
+
+
+this = torch.randn(5, 2, 3)
+print(this)
+that = torch.cumprod(this, dim = 0)
+print(that)

@@ -7,6 +7,8 @@ import pytorch3d
 from pytorch3d.ops.knn import knn_points
 from pytorch3d.renderer.cameras import PerspectiveCameras
 from data_utils import load_gaussians_from_ply, colours_from_spherical_harmonics
+import os
+import imageio
 
 class Gaussians:
 
@@ -536,6 +538,13 @@ class Scene:
         opacities = opacities.unsqueeze(1)
         alphas = opacities.repeat(1, points_2D.shape[1])
         alphas = alphas * exp_power
+
+        # for i in range(alphas.shape[0]):
+        #     for j in range(alphas.shape[1]):
+        #         if alphas[i][j] > 0:
+        #             print(alphas[i][j])
+        # print("-"*100)
+        
         alphas = torch.reshape(alphas, (-1, H, W))  # (N, H, W)
 
         # Post processing for numerical stability
@@ -588,15 +597,11 @@ class Scene:
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation.
         # transmittance = None  # (N, H, W)
-        N = alphas.shape[0]
-        transmittance = torch.zeros(N, H, W).to("cuda")
-        for i in range(N):
-            # print(i, N)
-            transmittance[i] = one_minus_alphas[0]
-            for j in range(i):
-                transmittance[i] *= one_minus_alphas[j+1]
-            
+
+        transmittance = torch.cumprod(one_minus_alphas, dim = 0)[:-1]
+
         # Post processing for numerical stability
+        # transmittance = torch.where(transmittance < 1e-4, 0.0, transmittance)  # (N, H, W)
         transmittance = torch.where(transmittance < 1e-4, 0.0, transmittance)  # (N, H, W)
 
         return transmittance
@@ -674,7 +679,7 @@ class Scene:
         # HINT: Refer to README for a relevant equation
         image = colours * alphas * transmittance
         image = torch.sum(image, dim = 0)  # (H, W, 3)
-
+        
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
         depth = z_vals * alphas * transmittance
@@ -682,7 +687,8 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
-        mask = depth > 0  # (H, W, 1)
+        mask = torch.ones(alphas.shape).cuda() * alphas * transmittance
+        mask = torch.sum(mask, dim = 0)
 
         final_transmittance = transmittance[-1, ..., 0].unsqueeze(0)  # (1, H, W)
         return image, depth, mask, final_transmittance
@@ -771,7 +777,7 @@ class Scene:
             mask = torch.zeros((H, W, 1), dtype=torch.float32).to(D)
 
             for b_idx in range(num_mini_batches):
-                print(b_idx, num_mini_batches)
+                print("batch ", b_idx, " in ", num_mini_batches)
 
                 quats_ = quats[b_idx * per_splat: (b_idx+1) * per_splat]
                 scales_ = scales[b_idx * per_splat: (b_idx+1) * per_splat]
