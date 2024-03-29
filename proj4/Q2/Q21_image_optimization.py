@@ -41,10 +41,14 @@ def optimize_an_image(
         # Forward pass to compute the loss
         
         ### YOUR CODE HERE ###
+        print("latents", type(latents))
+        latents = torch.Tensor(latents)
+        print("latents", type(latents), latents.shape)
+
         if args.sds_guidance:
-            loss = 
+            loss = sds.sds_loss(latents, embeddings)
         else:
-            loss = 
+            loss = sds.sds_loss(latents, embeddings, guidance_scale = 1)
 
         # Backward pass
         loss.backward()

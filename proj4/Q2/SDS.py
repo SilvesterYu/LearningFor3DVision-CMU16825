@@ -148,22 +148,37 @@ class SDS:
             device=self.device,
         )
 
+        # latents = self.encode_imgs(self.decode_latents(latents))
+        print("t", type(t))
+        print("text emb", type(text_embeddings))
+        print(text_embeddings)
+        text_embeddings_default = text_embeddings["default"]
+        text_embeddings_uncond = text_embeddings["uncond"]
+
         # predict the noise residual with unet, NO grad!
         with torch.no_grad():
             ### YOUR CODE HERE ###
- 
+            noise = torch.randn_like(latents)
+            latents_noisy = self.scheduler.add_noise(latents, noise, t)
+            # latent_model_input = torch.cat([latents_noisy] * 2)
+            latent_model_input = torch.cat([latents_noisy])
+            noise_pred = self.unet(latent_model_input, t, encoder_hidden_states=text_embeddings_default).sample
 
             if text_embeddings_uncond is not None and guidance_scale != 1:
                 ### YOUR CODE HERE ###
-                pass
- 
+                noise_pred_uncond, noise_pred_text = noise_pred.chunk(2)
+                noise_pred = noise_pred_text + guidance_scale * (noise_pred_text - noise_pred_uncond)
 
 
         # Compute SDS loss
         w = 1 - self.alphas[t]
         ### YOUR CODE HERE ###
+        grad = w * (noise_pred - noise)
+        grad = torch.nan_to_num(grad)
+        latents.backward(gradient=grad, retain_graph=True)
 
+        targets = (latents - grad).detach()
+        loss = 0.5 * F.mse_loss(latents.float(), targets, reduction='sum') / latents.shape[0]
 
-        loss = 
 
         return loss
