@@ -35,8 +35,8 @@ def setup_optimizer(gaussians):
     # fast with the default settings.
     # HINT: Consider setting different learning rates for different sets of parameters.
     parameters = [
-        {'params': [gaussians.pre_act_opacities], 'lr': 0.005, "name": "opacities"},
-        {'params': [gaussians.pre_act_scales], 'lr': 0.005, "name": "scales"},
+        {'params': [gaussians.pre_act_opacities], 'lr': 0.0005, "name": "opacities"},
+        {'params': [gaussians.pre_act_scales], 'lr': 0.001, "name": "scales"},
         {'params': [gaussians.colours], 'lr': 0.001, "name": "colours"},
         {'params': [gaussians.means], 'lr': 0.001, "name": "means"},
     ]
@@ -86,7 +86,9 @@ def run_training(args):
 
     gt_viz_imgs = [(train_dataset[i][0]*255.0).numpy().astype(np.uint8) for i in viz_idxs]
     # gt_viz_imgs = [np.array(Image.fromarray(x).resize((256, 256))) for x in gt_viz_imgs]
+    # --
     gt_viz_imgs = [np.array(Image.fromarray(x).resize((64, 64))) for x in gt_viz_imgs]
+    # --
     gt_viz_img = np.concatenate(gt_viz_imgs, axis=1)
 
     viz_cameras = [train_dataset[i][1].cuda() for i in viz_idxs]
