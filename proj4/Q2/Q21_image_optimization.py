@@ -28,11 +28,18 @@ def optimize_an_image(
     torch.cuda.empty_cache()
 
     # Step 2. Initialize latents to optimize
-    latents = nn.Parameter(torch.randn(1, 4, 64, 64, device=sds.device))
+    # latents = nn.Parameter(torch.randn(1, 4, 64, 64, device=sds.device))
+    
+    # --
+    latents = nn.Parameter(torch.randn(1, 4, 16, 16, device=sds.device))
+    # --
 
     # Step 3. Create optimizer and loss function
     optimizer = torch.optim.AdamW([latents], lr=1e-1, weight_decay=0)
     total_iter = 2000
+    # --
+    # total_iter = 20
+    # --
     scheduler = get_cosine_schedule_with_warmup(optimizer, 100, int(total_iter * 1.5))
 
     # Step 4. Training loop to optimize the latents
@@ -41,9 +48,9 @@ def optimize_an_image(
         # Forward pass to compute the loss
         
         ### YOUR CODE HERE ###
-        print("latents", type(latents))
+        # print("latents", type(latents))
         latents = torch.Tensor(latents)
-        print("latents", type(latents), latents.shape)
+        # print("latents", type(latents), latents.shape)
 
         if args.sds_guidance:
             loss = sds.sds_loss(latents, embeddings)

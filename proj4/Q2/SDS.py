@@ -32,8 +32,12 @@ class SDS:
             )
 
         # Set parameters
-        self.H = 512  # default height of Stable Diffusion
-        self.W = 512  # default width of Stable Diffusion
+        # self.H = 512  # default height of Stable Diffusion
+        # self.W = 512  # default width of Stable Diffusion
+        # --
+        self.H = 64  # default height of Stable Diffusion
+        self.W = 64  # default width of Stable Diffusion
+        # --
         self.num_inference_steps = 50
         self.output_dir = output_dir
         self.device = device
@@ -90,8 +94,11 @@ class SDS:
             latents (tensor): latent representation. shape (1, 4, 64, 64)
         """
         # check the shape of the image should be 512x512
-        assert img.shape[-2:] == (512, 512), "Image shape should be 512x512"
+        # assert img.shape[-2:] == (512, 512), "Image shape should be 512x512"
+        # --
+        assert img.shape[-2:] == (64, 64), "Image shape should be 512x512"
 
+        # --
         img = 2 * img - 1  # [0, 1] => [-1, 1]
 
         posterior = self.vae.encode(img).latent_dist
@@ -149,9 +156,9 @@ class SDS:
         )
 
         # latents = self.encode_imgs(self.decode_latents(latents))
-        print("t", type(t))
-        print("text emb", type(text_embeddings))
-        print(text_embeddings)
+        # print("t", type(t))
+        # print("text emb", type(text_embeddings))
+        # print(text_embeddings)
         text_embeddings_default = text_embeddings["default"]
         text_embeddings_uncond = text_embeddings["uncond"]
 
