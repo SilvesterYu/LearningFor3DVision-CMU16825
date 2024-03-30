@@ -32,12 +32,8 @@ class SDS:
             )
 
         # Set parameters
-        # self.H = 512  # default height of Stable Diffusion
-        # self.W = 512  # default width of Stable Diffusion
-        # --
-        self.H = 64  # default height of Stable Diffusion
-        self.W = 64  # default width of Stable Diffusion
-        # --
+        self.H = 512  # default height of Stable Diffusion
+        self.W = 512  # default width of Stable Diffusion
         self.num_inference_steps = 50
         self.output_dir = output_dir
         self.device = device
@@ -94,11 +90,8 @@ class SDS:
             latents (tensor): latent representation. shape (1, 4, 64, 64)
         """
         # check the shape of the image should be 512x512
-        # assert img.shape[-2:] == (512, 512), "Image shape should be 512x512"
-        # --
-        assert img.shape[-2:] == (64, 64), "Image shape should be 512x512"
+        assert img.shape[-2:] == (512, 512), "Image shape should be 512x512"
 
-        # --
         img = 2 * img - 1  # [0, 1] => [-1, 1]
 
         posterior = self.vae.encode(img).latent_dist
@@ -155,37 +148,30 @@ class SDS:
             device=self.device,
         )
 
-        # latents = self.encode_imgs(self.decode_latents(latents))
-        # print("t", type(t))
-        # print("text emb", type(text_embeddings))
-        # print(text_embeddings)
-        text_embeddings_default = text_embeddings["default"]
-        text_embeddings_uncond = text_embeddings["uncond"]
-
         # predict the noise residual with unet, NO grad!
         with torch.no_grad():
             ### YOUR CODE HERE ###
             noise = torch.randn_like(latents)
-            latents_noisy = self.scheduler.add_noise(latents, noise, t)
-            # latent_model_input = torch.cat([latents_noisy] * 2)
-            latent_model_input = torch.cat([latents_noisy])
-            noise_pred = self.unet(latent_model_input, t, encoder_hidden_states=text_embeddings_default).sample
+            latent_model_input = self.scheduler.add_noise(latents, noise, t)
 
+            noise_pred_default = self.unet(latent_model_input, t, encoder_hidden_states=text_embeddings).sample
+ 
             if text_embeddings_uncond is not None and guidance_scale != 1:
                 ### YOUR CODE HERE ###
-                noise_pred_uncond, noise_pred_text = noise_pred.chunk(2)
-                noise_pred = noise_pred_text + guidance_scale * (noise_pred_text - noise_pred_uncond)
+                noise_pred_uncond = self.unet(latent_model_input, t, encoder_hidden_states=text_embeddings_uncond).sample
+                noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_default - noise_pred_uncond)
+            else:
+                noise_pred = noise_pred_default
+
+            
 
 
         # Compute SDS loss
         w = 1 - self.alphas[t]
         ### YOUR CODE HERE ###
-        grad = w * (noise_pred - noise)
+        grad = w[:, None, None, None] * (noise_pred - noise)
+        grad *= grad_scale
         grad = torch.nan_to_num(grad)
-        latents.backward(gradient=grad, retain_graph=True)
-
         targets = (latents - grad).detach()
-        loss = 0.5 * F.mse_loss(latents.float(), targets, reduction='sum') / latents.shape[0]
-
-
+        loss =  F.mse_loss(latents.float(), targets, reduction='sum') / latents.shape[0]
         return loss
