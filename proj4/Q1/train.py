@@ -85,9 +85,9 @@ def run_training(args):
     viz_idxs = np.linspace(0, len(train_dataset)-1, 5).astype(np.int32)[:4]
 
     gt_viz_imgs = [(train_dataset[i][0]*255.0).numpy().astype(np.uint8) for i in viz_idxs]
-    # gt_viz_imgs = [np.array(Image.fromarray(x).resize((256, 256))) for x in gt_viz_imgs]
+    gt_viz_imgs = [np.array(Image.fromarray(x).resize((256, 256))) for x in gt_viz_imgs]
     # --
-    gt_viz_imgs = [np.array(Image.fromarray(x).resize((64, 64))) for x in gt_viz_imgs]
+    # gt_viz_imgs = [np.array(Image.fromarray(x).resize((64, 64))) for x in gt_viz_imgs]
     # --
     gt_viz_img = np.concatenate(gt_viz_imgs, axis=1)
 
@@ -105,7 +105,7 @@ def run_training(args):
     optimizer = setup_optimizer(gaussians)
 
     # Training loop
-    img_size = (64, 64)
+    img_size = (128, 128)
     viz_frames = []
     for itr in range(args.num_itrs):
 
@@ -124,8 +124,8 @@ def run_training(args):
             gt_mask = gt_mask[0].cuda()
 
         # --
-        gt_img = resize_img(gt_img, img_size)
-        gt_mask = resize_img(gt_mask, img_size)
+        # gt_img = resize_img(gt_img, img_size)
+        # gt_mask = resize_img(gt_mask, img_size)
         # --
 
         # Rendering scene using gaussian splatting
@@ -140,7 +140,8 @@ def run_training(args):
 
         pred_img, depth, mask = scene.render(camera, 
                                             per_splat=args.gaussians_per_splat,
-                                            img_size=img_size,
+                                            # img_size=img_size,
+                                            img_size = train_dataset.img_size,
                                             bg_colour=(1.0, 1.0, 1.0)
                                             )
 
@@ -153,7 +154,7 @@ def run_training(args):
         optimizer.step()
         optimizer.zero_grad()
 
-        print(f"[*] Itr: {itr:07d} | Loss: {loss:0.3f}")
+        print(f"[*] Itr: {itr:07d} in {args.num_itrs:07d} | Loss: {loss:0.3f}")
 
         torch.cuda.empty_cache()
 
@@ -161,8 +162,8 @@ def run_training(args):
             viz_frame = visualize_renders(
                 scene, gt_viz_img,
                 viz_cameras, 
-                # train_dataset.img_size
-                (64, 64)
+                train_dataset.img_size
+                # (64, 64)
             )
             viz_frames.append(viz_frame)
             print("Rendered ", itr, "th img")
@@ -189,8 +190,8 @@ def run_training(args):
         if gt_mask is not None:
             gt_mask = gt_mask[0].cuda()
         # --
-        gt_img = resize_img(gt_img, img_size)
-        gt_mask = resize_img(gt_mask, img_size)
+        # gt_img = resize_img(gt_img, img_size)
+        # gt_mask = resize_img(gt_mask, img_size)
 
         # gt_img_npy = gt_img.detach().cpu().numpy()
         # gt_img_npy = (np.clip(gt_img_npy, 0.0, 1.0) * 255.0).astype(np.uint8)
@@ -211,7 +212,8 @@ def run_training(args):
 
             pred_img, depth, mask = scene.render(camera, 
                                             per_splat=args.gaussians_per_splat,
-                                            img_size=img_size,
+                                            # img_size=img_size,
+                                            img_size = train_dataset.img_size,
                                             bg_colour=(1.0, 1.0, 1.0)
                                             )
 
@@ -237,8 +239,8 @@ def run_training(args):
             gt_mask = gt_mask[0].cuda()
         
         # --
-        gt_img = resize_img(gt_img, img_size)
-        gt_mask = resize_img(gt_mask, img_size)
+        # gt_img = resize_img(gt_img, img_size)
+        # gt_mask = resize_img(gt_mask, img_size)
         # --
 
         with torch.no_grad():
@@ -254,7 +256,8 @@ def run_training(args):
 
             pred_img, depth, mask = scene.render(camera, 
                                             per_splat=args.gaussians_per_splat,
-                                            img_size=img_size,
+                                            # img_size=img_size,
+                                            img_size = train_dataset.img_size,
                                             bg_colour=(1.0, 1.0, 1.0)
                                             )
 

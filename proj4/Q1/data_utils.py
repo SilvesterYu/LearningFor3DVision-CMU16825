@@ -71,10 +71,10 @@ class CowDataset(Dataset):
             img_size = img.shape[:2]
 
             camera = PerspectiveCameras(
-                # focal_length=5.0 * dim/2.0, in_ndc=False,
-                # principal_point=((dim/2, dim/2),),
-                focal_length=5.0 * 32.0, in_ndc=False,
-                principal_point=((32, 32),),
+                focal_length=5.0 * dim/2.0, in_ndc=False,
+                principal_point=((dim/2, dim/2),),
+                # focal_length=5.0 * 32.0, in_ndc=False,
+                # principal_point=((32, 32),),
                 R=R, T=T, image_size=(img_size,),
             )
 
@@ -117,7 +117,7 @@ def colour_depth_q1_render(depth):
 def visualize_renders(scene, gt_viz_img, cameras, img_size):
 
     imgs = []
-    viz_size = (64, 64)
+    viz_size = (256, 256)
     with torch.no_grad():
         for cam in cameras:
             pred_img, _, _ = scene.render(

@@ -123,7 +123,7 @@ def run_training(args):
     optimizer = setup_optimizer(gaussians)
 
     # Training loop
-    img_size = (64, 64)
+    img_size = (128, 128)
     viz_frames = []
     for itr in range(args.num_itrs):
 
@@ -169,8 +169,8 @@ def run_training(args):
             viz_frame = visualize_renders(
                 scene, gt_viz_img,
                 viz_cameras, 
-                # (128, 128)
-                (64, 64)
+                (128, 128)
+                # (64, 64)
             )
             viz_frames.append(viz_frame)
 
