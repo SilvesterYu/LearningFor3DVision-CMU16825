@@ -36,9 +36,7 @@ def create_renders(args):
     scene = Scene(gaussians)
 
     imgs = []
-    # num_views = 1
     for i in tqdm(range(num_views), desc="Rendering"):
-        print("view # ", i)
 
         dist = 6.0
         R, T = look_at_view_transform(dist = dist, azim=azims[i], elev=30.0, up=((0, -1, 0),))
@@ -55,21 +53,19 @@ def create_renders(args):
             # HINT: Set bg_colour to (1.0, 1.0, 1.0)
             # HINT: Get per_splat from args.gaussians_per_splat
             # HINT: img_size and camera are available above
+            # img, depth, mask = None
             img, depth, mask = scene.render(camera, 
                                             per_splat=args.gaussians_per_splat,
                                             img_size=img_size,
                                             bg_colour=(1.0, 1.0, 1.0)
                                             )
-            
+
         debug_path = os.path.join(debug_root, f"{i:03d}.png")
         img = img.detach().cpu().numpy()
-
         mask = mask.repeat(1, 1, 3).detach().cpu().numpy()
         depth = depth.detach().cpu().numpy()
 
         img = (np.clip(img, 0.0, 1.0) * 255.0).astype(np.uint8)
-        image = img
-
         mask = np.where(mask > 0.5, 255.0, 0.0).astype(np.uint8)  # (H, W, 3)
 
         # Colouring the depth map

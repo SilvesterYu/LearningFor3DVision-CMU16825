@@ -69,12 +69,9 @@ class CowDataset(Dataset):
             R, T = look_at_view_transform(dist, ele, az)
 
             img_size = img.shape[:2]
-
             camera = PerspectiveCameras(
                 focal_length=5.0 * dim/2.0, in_ndc=False,
                 principal_point=((dim/2, dim/2),),
-                # focal_length=5.0 * 32.0, in_ndc=False,
-                # principal_point=((32, 32),),
                 R=R, T=T, image_size=(img_size,),
             )
 

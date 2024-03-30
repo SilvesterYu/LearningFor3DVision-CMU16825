@@ -1,15 +1,15 @@
 import math
 import torch
 import numpy as np
-from PIL import Image
 
 from typing import Tuple, Optional
-import pytorch3d
 from pytorch3d.ops.knn import knn_points
 from pytorch3d.renderer.cameras import PerspectiveCameras
 from data_utils import load_gaussians_from_ply, colours_from_spherical_harmonics
+
 import os
 import imageio
+import pytorch3d
 
 class Gaussians:
 
@@ -240,7 +240,7 @@ class Gaussians:
         # HINT: Are quats ever used or optimized for isotropic gaussians? What will their value be?
         # Based on your answers, can you write a more efficient code for the isotropic case?
         if self.is_isotropic:
-            
+
             ### YOUR CODE HERE ###
             # cov_3D = None  # (N, 3, 3)
             # https://stackoverflow.com/questions/47372508/how-to-construct-a-3d-tensor-where-every-2d-sub-tensor-is-a-diagonal-matrix-in-p
@@ -253,11 +253,11 @@ class Gaussians:
             cov_3D = torch.matmul(cov_3D, torch.transpose(scale_mats, 1, 2))
             cov_3D = torch.matmul(cov_3D, torch.transpose(rots, 1, 2))
 
-            
         # HINT: You can use a function from pytorch3d to convert quaternions to rotation matrices.
         else:
 
             ### YOUR CODE HERE ###
+            # cov_3D = None  # (N, 3, 3)
             Is = torch.eye(scales.size(1)).to("cuda")
             scale_mats = (scales.unsqueeze(2).expand(*scales.size(), scales.size(1))) * Is
 
@@ -353,6 +353,7 @@ class Gaussians:
 
         means_2D = torch.transpose(torch.matmul(proj_mat, torch.transpose(cam_means_3D, 0, 1))[:2], 0, 1)
 
+
         return means_2D
 
     @staticmethod
@@ -400,9 +401,7 @@ class Gaussians:
         """
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation
-        # print("points2D, means2D, conv2D", points_2D.shape, means_2D.shape, cov_2D_inverse.shape)
         # power = None  # (N, H*W)
-
         N = means_2D.shape[0]
 
         points_2D_ = points_2D.unsqueeze(2)[0].repeat(N, 1, 1, 1)
@@ -450,7 +449,6 @@ class Scene:
         # HINT: You can use get the means of 3D Gaussians self.gaussians and calculate
         # the depth using the means and the camera
         # z_vals = None  # (N,)
-
         means_3D = self.gaussians.means
         cam_means_3D = camera.get_world_to_view_transform().transform_points(means_3D)
         z_vals = cam_means_3D[:, -1]
@@ -475,7 +473,6 @@ class Scene:
         """
         ### YOUR CODE HERE ###
         # idxs = None  # (N,)
-
         sorted, indices = torch.sort(z_vals)
         mask = sorted >= 0
         idxs = torch.masked_select(indices, mask).to(torch.int64)
@@ -528,6 +525,8 @@ class Scene:
         ### YOUR CODE HERE ###
         # HINT: Refer to README for a relevant equation.
         # alphas = None  # (N, H*W)
+        # alphas = torch.reshape(alphas, (-1, H, W))  # (N, H, W)
+
         opacities = opacities.unsqueeze(1)
         alphas = opacities.repeat(1, points_2D.shape[1])
         alphas = alphas * exp_power 
@@ -587,7 +586,6 @@ class Scene:
         transmittance = torch.cumprod(one_minus_alphas, dim = 0)[:-1]
 
         # Post processing for numerical stability
-        # transmittance = torch.where(transmittance < 1e-4, 0.0, transmittance)  # (N, H, W)
         transmittance = torch.where(transmittance < 1e-4, 0.0, transmittance)  # (N, H, W)
 
         return transmittance
@@ -633,23 +631,30 @@ class Scene:
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
+        # means_2D = None  # (N, 2)
         means_2D = self.gaussians.compute_means_2D(means_3D, camera)  # (N, 2)
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
+        # cov_2D = None  # (N, 2, 2)
         cov_2D = self.gaussians.compute_cov_2D(means_3D, quats, scales, camera, img_size)  # (N, 2, 2)
+
 
         # Step 2: Compute alpha maps for each gaussian
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
+        # alphas = None  # (N, H, W)
         alphas = self.compute_alphas(opacities, means_2D, cov_2D, img_size)  # (N, H, W)
+
 
         # Step 3: Compute transmittance maps for each gaussian
 
         ### YOUR CODE HERE ###
         # HINT: Can you find a function in this file that can help?
+        # transmittance = None  # (N, H, W)
         transmittance = self.compute_transmittance(alphas, start_transmittance)  # (N, H, W)
+
 
         # Some unsqueezing to set up broadcasting for vectorized implementation.
         # You can selectively comment these out if you want to compute things
@@ -665,7 +670,7 @@ class Scene:
         # HINT: Refer to README for a relevant equation
         image = colours * alphas * transmittance
         image = torch.sum(image, dim = 0)  # (H, W, 3)
-        
+
         ### YOUR CODE HERE ###
         # HINT: Can you implement an equation inspired by the equation for colour?
         depth = z_vals * alphas * transmittance
@@ -763,8 +768,6 @@ class Scene:
             mask = torch.zeros((H, W, 1), dtype=torch.float32).to(D)
 
             for b_idx in range(num_mini_batches):
-                torch.cuda.empty_cache()
-                # print("batch ", b_idx, " in ", num_mini_batches)
 
                 quats_ = quats[b_idx * per_splat: (b_idx+1) * per_splat]
                 scales_ = scales[b_idx * per_splat: (b_idx+1) * per_splat]
@@ -772,9 +775,7 @@ class Scene:
                 colours_ = colours[b_idx * per_splat: (b_idx+1) * per_splat]
                 means_3D_ = means_3D[b_idx * per_splat: (b_idx+1) * per_splat]
                 opacities_ = opacities[b_idx * per_splat: (b_idx+1) * per_splat]
-                
-                if z_vals_.shape[0] != per_splat:
-                    break
+
                 # Get image, depth and mask via splatting
                 image_, depth_, mask_, start_transmittance = self.splat(
                     camera, means_3D_, z_vals_, quats_, scales_, colours_,

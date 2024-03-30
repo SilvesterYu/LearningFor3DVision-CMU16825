@@ -146,8 +146,6 @@ def run_test_3():
     dim = 128
     img_size = (dim, dim)
     R, T = look_at_view_transform(dist = dist, azim=75.0, elev=45.0)
-            
-
     camera = PerspectiveCameras(
         focal_length=5.0 * dim/2.0, in_ndc=False,
         principal_point=((dim/2, dim/2),),
@@ -240,25 +238,21 @@ def run_tests():
 
     if run_test_1():
         counter += 1
-        print("Test 1 Pass!")
     else:
         print("Test 1 Fail!")
 
     if run_test_2():
         counter += 1
-        print("Test 2 Pass!")
     else:
         print("Test 2 Fail!")
 
     if run_test_3():
         counter += 1
-        print("Test 3 Pass!")
     else:
         print("Test 3 Fail!")
 
     if run_test_4():
         counter += 1
-        print("Test 4 Pass!")
     else:
         print("Test 4 Fail!")
 

@@ -22,7 +22,6 @@ def make_trainable(gaussians):
     gaussians.pre_act_scales.requires_grad = True
     gaussians.colours.requires_grad = True
     gaussians.pre_act_opacities.requires_grad = True
-    
 
 def setup_optimizer(gaussians):
 
@@ -35,30 +34,15 @@ def setup_optimizer(gaussians):
     # fast with the default settings.
     # HINT: Consider setting different learning rates for different sets of parameters.
     parameters = [
-        {'params': [gaussians.pre_act_opacities], 'lr': 0.0005, "name": "opacities"},
-        {'params': [gaussians.pre_act_scales], 'lr': 0.001, "name": "scales"},
-        {'params': [gaussians.colours], 'lr': 0.001, "name": "colours"},
-        {'params': [gaussians.means], 'lr': 0.001, "name": "means"},
+        {'params': [gaussians.pre_act_opacities], 'lr': 0.05, "name": "opacities"},
+        {'params': [gaussians.pre_act_scales], 'lr': 0.005, "name": "scales"},
+        {'params': [gaussians.colours], 'lr': 0.0025, "name": "colours"},
+        {'params': [gaussians.means], 'lr': 0.0001, "name": "means"},
     ]
-    optimizer = torch.optim.Adam(parameters, lr=0.001, eps=1e-9)
+    optimizer = torch.optim.Adam(parameters, lr=0.0, eps=1e-15)
     # optimizer = None
 
     return optimizer
-
-
-# --
-def resize_img(gt_img, img_size):
-    shape0 = gt_img.shape[0]
-    if shape0 == 1:
-        gt_img = gt_img.squeeze()
-    gt_img = gt_img.permute(2, 0, 1)
-    gt_img = T.Resize(size=img_size)(gt_img)
-    gt_img = gt_img.permute(1, 2, 0)
-    if shape0 == 1:
-        gt_img = gt_img.unsqueeze(0)
-    plt.imshow(gt_img.detach().cpu().numpy())
-    return gt_img
-# --
 
 def run_training(args):
 
@@ -86,9 +70,6 @@ def run_training(args):
 
     gt_viz_imgs = [(train_dataset[i][0]*255.0).numpy().astype(np.uint8) for i in viz_idxs]
     gt_viz_imgs = [np.array(Image.fromarray(x).resize((256, 256))) for x in gt_viz_imgs]
-    # --
-    # gt_viz_imgs = [np.array(Image.fromarray(x).resize((64, 64))) for x in gt_viz_imgs]
-    # --
     gt_viz_img = np.concatenate(gt_viz_imgs, axis=1)
 
     viz_cameras = [train_dataset[i][1].cuda() for i in viz_idxs]
@@ -105,7 +86,6 @@ def run_training(args):
     optimizer = setup_optimizer(gaussians)
 
     # Training loop
-    img_size = (128, 128)
     viz_frames = []
     for itr in range(args.num_itrs):
 
@@ -123,11 +103,6 @@ def run_training(args):
         if gt_mask is not None:
             gt_mask = gt_mask[0].cuda()
 
-        # --
-        # gt_img = resize_img(gt_img, img_size)
-        # gt_mask = resize_img(gt_mask, img_size)
-        # --
-
         # Rendering scene using gaussian splatting
         ### YOUR CODE HERE ###
         # HINT: Can any function from the Scene class help?
@@ -135,41 +110,32 @@ def run_training(args):
         # HINT: Get img_size from train_dataset
         # HINT: Get per_splat from args.gaussians_per_splat
         # HINT: camera is available above
-        pred_img = None
-        # print("---------------img size", img_size)
-
+        # pred_img = None
         pred_img, depth, mask = scene.render(camera, 
-                                            per_splat=args.gaussians_per_splat,
-                                            # img_size=img_size,
-                                            img_size = train_dataset.img_size,
-                                            bg_colour=(1.0, 1.0, 1.0)
-                                            )
+                                    per_splat=args.gaussians_per_splat,
+                                    # img_size=img_size,
+                                    img_size = train_dataset.img_size,
+                                    bg_colour=(1.0, 1.0, 1.0)
+                                    )
 
         # Compute loss
         ### YOUR CODE HERE ###
         # HINT: A simple standard loss function should work.
+        # loss = None
         loss = F.l1_loss(pred_img, gt_img)
 
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()
 
-        print(f"[*] Itr: {itr:07d} in {args.num_itrs:07d} | Loss: {loss:0.3f}")
-
-        torch.cuda.empty_cache()
+        print(f"[*] Itr: {itr:07d} | Loss: {loss:0.3f}")
 
         if itr % args.viz_freq == 0:
             viz_frame = visualize_renders(
                 scene, gt_viz_img,
-                viz_cameras, 
-                train_dataset.img_size
-                # (64, 64)
+                viz_cameras, train_dataset.img_size
             )
             viz_frames.append(viz_frame)
-            print("Rendered ", itr, "th img")
-            viz_frame_npy = (np.clip(viz_frame, 0.0, 1.0) * 255.0).astype(np.uint8)
-            viz_frame_npy = Image.fromarray(viz_frame_npy)
-            viz_frame_npy.save("viz_frame.png")
 
     print("[*] Training Completed.")
 
@@ -184,20 +150,10 @@ def run_training(args):
     )
     for viz_data in tqdm(viz_loader, desc="Creating Visualization"):
         gt_img, camera, gt_mask = viz_data
-
-        gt_img = gt_img[0].cuda()        
+        gt_img = gt_img[0].cuda()
         camera = camera[0].cuda()
         if gt_mask is not None:
             gt_mask = gt_mask[0].cuda()
-        # --
-        # gt_img = resize_img(gt_img, img_size)
-        # gt_mask = resize_img(gt_mask, img_size)
-
-        # gt_img_npy = gt_img.detach().cpu().numpy()
-        # gt_img_npy = (np.clip(gt_img_npy, 0.0, 1.0) * 255.0).astype(np.uint8)
-        # gt_img_npy_img = Image.fromarray(gt_img_npy)
-        # gt_img_npy_img.save("that.png")
-        # --
 
         with torch.no_grad():
 
@@ -208,8 +164,6 @@ def run_training(args):
             # HINT: Get img_size from train_dataset
             # HINT: Get per_splat from args.gaussians_per_splat
             # HINT: camera is available above
-            pred_img = None
-
             pred_img, depth, mask = scene.render(camera, 
                                             per_splat=args.gaussians_per_splat,
                                             # img_size=img_size,
@@ -219,8 +173,6 @@ def run_training(args):
 
         pred_npy = pred_img.detach().cpu().numpy()
         pred_npy = (np.clip(pred_npy, 0.0, 1.0) * 255.0).astype(np.uint8)
-        # pred_npy_img = Image.fromarray(pred_npy)
-        # pred_npy_img.save("this.png")
         frames.append(pred_npy)
 
     # Saving renderings
@@ -233,15 +185,8 @@ def run_training(args):
         gt_img, camera, gt_mask = test_data
         gt_img = gt_img[0].cuda()
         camera = camera[0].cuda()
-        
-
         if gt_mask is not None:
             gt_mask = gt_mask[0].cuda()
-        
-        # --
-        # gt_img = resize_img(gt_img, img_size)
-        # gt_mask = resize_img(gt_mask, img_size)
-        # --
 
         with torch.no_grad():
 
@@ -252,8 +197,6 @@ def run_training(args):
             # HINT: Get img_size from test_dataset
             # HINT: Get per_splat from args.gaussians_per_splat
             # HINT: camera is available above
-            pred_img = None
-
             pred_img, depth, mask = scene.render(camera, 
                                             per_splat=args.gaussians_per_splat,
                                             # img_size=img_size,
