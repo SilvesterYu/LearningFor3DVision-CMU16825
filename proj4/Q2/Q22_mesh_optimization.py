@@ -24,6 +24,9 @@ from utils import (
     seed_everything,
 )
 
+from data_utils import CowDataset
+import random
+
 
 def optimize_mesh_texture(
     sds,
@@ -80,7 +83,19 @@ def optimize_mesh_texture(
     ### YOUR CODE HERE ###
     # create a list of query cameras as the training set
     # Note: to create the dataset, you can either pre-define a list of query cameras as below or randomly sample a camera pose on the fly in the training loop.
-    query_cameras = [] # optional
+    
+    # --
+    dist=3
+    elev=0
+    viz_cameras = []
+    for azim in range(0, 360, 10):
+        R, T = look_at_view_transform(dist, elev, azim)
+        cameras = FoVPerspectiveCameras(device=device, R=R, T=T)
+        viz_cameras.append(cameras)
+    query_cameras = viz_cameras
+    # --
+
+    # query_cameras = [] # optional
 
     # Step 4. Create optimizer training parameters
     optimizer = torch.optim.AdamW(color_field.parameters(), lr=5e-4, weight_decay=0)
@@ -88,7 +103,14 @@ def optimize_mesh_texture(
     scheduler = get_cosine_schedule_with_warmup(optimizer, 100, int(total_iter * 1.5))
 
     # Step 5. Training loop to optimize the texture map
+
+    # --
+    text_embeddings_default = embeddings["default"]
+    text_embeddings_uncond = embeddings["uncond"]
+    # --
+
     loss_dict = {}
+    # total_iter = 200
     for i in tqdm(range(total_iter)):
         # Initialize optimizer
         optimizer.zero_grad()
@@ -100,13 +122,19 @@ def optimize_mesh_texture(
 
         # Forward pass
         # Render a randomly sampled camera view to optimize in this iteration
-        rend = 
+        # --
+        my_camera = random.choice(query_cameras)
+        # --
+        rend = renderer(mesh, cameras=my_camera, lights=lights)
+        
+        rend = rend[0, ..., :3].permute(2, 0, 1).unsqueeze(0)
+        # print(torch.max(rend), torch.min(rend))
+        # print(rend.shape)
+
         # Encode the rendered image to latents
-        latents = 
+        latents = sds.encode_imgs(rend)
         # Compute the loss
-        loss =
-
-
+        loss = sds.sds_loss(latents, text_embeddings_default, text_embeddings_uncond=text_embeddings_uncond)
 
         # Backward pass
         loss.backward()
@@ -128,6 +156,15 @@ def optimize_mesh_texture(
             )
             output_im.save(output_path)
 
+            # --
+            render_360_views(
+            mesh.detach(),
+            renderer,
+            device=device,
+            output_path=osp.join(sds.output_dir, f"output_{prompt[0].replace(' ', '_')}_iter_{i}.gif"),
+            )
+            # --
+
     if save_mesh:
         render_360_views(
             mesh.detach(),
@@ -139,7 +176,7 @@ def optimize_mesh_texture(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--prompt", type=str, default="a hamburger")
+    parser.add_argument("--prompt", type=str, default="a tree")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output_dir", type=str, default="output")
     parser.add_argument(

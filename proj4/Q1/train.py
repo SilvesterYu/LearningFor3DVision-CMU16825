@@ -128,7 +128,7 @@ def run_training(args):
         optimizer.step()
         optimizer.zero_grad()
 
-        print(f"[*] Itr: {itr:07d} | Loss: {loss:0.3f}")
+        print(f"[*] Itr: {itr:07d} in {args.num_itrs:07d}| Loss: {loss:0.3f}")
 
         if itr % args.viz_freq == 0:
             viz_frame = visualize_renders(
@@ -136,6 +136,7 @@ def run_training(args):
                 viz_cameras, train_dataset.img_size
             )
             viz_frames.append(viz_frame)
+            imageio.mimwrite(f"itr_{itr:07d}.gif", viz_frames, loop=0, duration=(1/10.0)*1000)
 
     print("[*] Training Completed.")
 
