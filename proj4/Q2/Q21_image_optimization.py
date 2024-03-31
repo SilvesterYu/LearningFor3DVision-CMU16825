@@ -73,7 +73,7 @@ def optimize_an_image(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--prompt", type=str, default="a hamburger")
+    parser.add_argument("--prompt", type=str, default="harry potter")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output_dir", type=str, default="output")
     parser.add_argument("--sds_guidance", type=int, default=0, choices=[0, 1], help="boolen option to add guidance to the SDS loss")
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     os.makedirs(output_dir, exist_ok=True)
 
     # initialize SDS
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
     sds = SDS(sd_version="2.1", device=device, output_dir=output_dir)
 
     # optimize an image

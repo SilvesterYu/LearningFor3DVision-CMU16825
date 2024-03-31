@@ -157,12 +157,12 @@ def optimize_mesh_texture(
             output_im.save(output_path)
 
             # --
-            render_360_views(
-            mesh.detach(),
-            renderer,
-            device=device,
-            output_path=osp.join(sds.output_dir, f"output_{prompt[0].replace(' ', '_')}_iter_{i}.gif"),
-            )
+            # render_360_views(
+            # mesh.detach(),
+            # renderer,
+            # device=device,
+            # output_path=osp.join(sds.output_dir, f"output_{prompt[0].replace(' ', '_')}_iter_{i}.gif"),
+            # )
             # --
 
     if save_mesh:
@@ -176,7 +176,7 @@ def optimize_mesh_texture(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--prompt", type=str, default="a tree")
+    parser.add_argument("--prompt", type=str, default="a zebra")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output_dir", type=str, default="output")
     parser.add_argument(
@@ -205,7 +205,7 @@ if __name__ == "__main__":
     os.makedirs(output_dir, exist_ok=True)
 
     # initialize SDS
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
     sds = SDS(sd_version="2.1", device=device, output_dir=output_dir)
 
     # optimize the texture map of a mesh

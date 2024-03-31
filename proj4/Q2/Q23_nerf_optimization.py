@@ -160,12 +160,14 @@ def optimize_nerf(
                 text_cond = embeddings["default"]
             else:
                 ### YOUR CODE HERE ###
-                pass
+                text_uncond = None
+                text_cond = embeddings["default"]
 
   
             ### YOUR CODE HERE ###
-            latents = 
-            loss = 
+            latents = sds.encode_imgs(pred_rgb)
+            loss = sds.sds_loss(latents, text_cond, text_embeddings_uncond=text_uncond)
+
 
             # regularizations
             if args.lambda_entropy > 0:

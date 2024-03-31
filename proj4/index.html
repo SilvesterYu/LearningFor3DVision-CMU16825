@@ -21,14 +21,14 @@
 
         <h4> 1.2 Training 3D Gaussian Representations (15 points) </h4>
         <p>- Learning rates that I used for each parameter:</p>
-        <p>(1) pre_act_opacities: 0.0005</p>
-        <p>(2) pre_act_scales: 0.001</p>
-        <p>(3) colours: 0.001</p>
-        <p>(4) means: 0.001</p>
+        <p>(1) pre_act_opacities: 0.05</p>
+        <p>(2) pre_act_scales: 0.005</p>
+        <p>(3) colours: 0.025</p>
+        <p>(4) means: 0.0001</p>
 
-        <p>- Number of iterations that I trained the model for: 2000</p>
+        <p>- Number of iterations that I trained the model for: 250</p>
 
-        <P>- PSNR: 15.591, SSIM: 0.373</P>
+        <P>- PSNR: 25.591, SSIM: 0.903</P>
         
         <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/q1_training_final_renders.gif", style="width:20%; margin-left:40%">
 
@@ -49,6 +49,115 @@
 
         <h4> 2.1 Score Distillation Sampling Loss + Image Optimization (20 points) </h4>
 
+        <section>
+          <div class="row">
+
+              <div class="column2", style="margin-left: 25%">
+                  <p>  "a hamburger" sds guidance = 1, 1700 itr </p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/output_a_iter_1700.png", style="width:100%">
+
+                    </div>
+
+              <div class="column2">
+                  <p> "a hamburger" sds guidance = 0, 1700 itr </p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/output_a_hamburger_iter_400.png", style="width:100%">
+                </div>
+          </div>
+
+          
+      </section>
+
+      <section>
+        <div class="row">
+
+            <div class="column2", style="margin-left: 25%">
+                <p>  "a rose" sds guidance = 1, 1999 itr </p>
+                <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/output_a_iter_1999.png", style="width:100%">
+
+                  </div>
+
+            <div class="column2">
+                <p> "a rose" sds guidance = 0, 1999 itr </p>
+                <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/output_a_rose_iter_1400.png", style="width:100%">
+              </div>
+        </div>
+
+        
+    </section>
+
+    <section>
+      <div class="row">
+
+          <div class="column2", style="margin-left: 25%">
+              <p>  "a glacier" sds guidance = 1, 300 itr </p>
+              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/output_a_iter_300.png", style="width:100%">
+
+                </div>
+
+          <div class="column2">
+              <p> "a glacier" sds guidance = 0, 300 itr </p>
+              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/output_a_glacier_iter_400.png", style="width:100%">
+            </div>
+      </div>
+
+      
+  </section>
+
+  <section>
+    <div class="row">
+
+        <div class="column2", style="margin-left: 25%">
+            <p>  "harry potter" sds guidance = 1, 600 itr </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/output_h_iter_600.png", style="width:100%">
+
+              </div>
+
+        <div class="column2">
+            <p> "harry potter" sds guidance = 0, 600 itr </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/output_harry_potter_h_iter_600.png", style="width:100%">
+          </div>
+    </div>
+
+    
+</section>
+
+
+
+
+        <h4>2.2 Texture Map Optimization for Mesh (15 points)</h4>
+
+        <section>
+          <div class="row">
+      
+              <div class="column2", style="margin-left: 0%">
+                  <p>  "a hamburger" </p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/a_hamburger_final_mesh2.gif", style="width:100%">
+      
+                    </div>
+      
+              <div class="column2">
+                  <p> "a cow"</p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/a_cow_final_mesh2.gif", style="width:100%">
+                </div>
+
+                <div class="column2">
+                  <p> "a tree"</p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/a_tree_final_mesh.gif", style="width:100%">
+                </div>
+
+                <div class="column2">
+                  <p> "a zebra"</p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/a_zebra_final_mesh.gif", style="width:100%">
+                </div>
+          </div>
+      
+          
+      </section>
+
+        <h4>2.3 NeRF Optimization (15 points)</h4>
+
+        <h4>2.4 Extensions</h4>
+        <h4>2.4.3 Variation of implementation of SDS loss (10 points)</h4>
 
 
 
@@ -83,6 +192,7 @@
                         <p> rays </p>
                         <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/images/1.3_rays.png", style="width:100%">
                       </div>
+                </div>
       
                 
             </section>
@@ -417,25 +527,7 @@
           </section>
 
 
-             <p> 5 views</p>
-          <secion>
-              <div class="row">
-                <div class="column2", style="margin-left: 11%">
-                  <p> geometry</p>
-                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_view5.gif", style="width:100%">
-            
-                    </div>
-              
-                <div class="column2", style="margin-left:">
-                    <p> NERF</p>
-                    <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_3_nerf5.gif", style="width:100%">
-              
-                      </div>
-              
-                <div class="column2">
-                    <p> VolSDF </p>
-                    <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_view5.gif", style="width:100%">
-                  </div>
+
   
   
   </section>

@@ -122,7 +122,7 @@ def run_training(args):
         ### YOUR CODE HERE ###
         # HINT: A simple standard loss function should work.
         # loss = None
-        loss = F.l1_loss(pred_img, gt_img)
+        loss = F.l1_loss(pred_img, gt_img) + F.l1_loss(mask, gt_mask)
 
         loss.backward()
         optimizer.step()
@@ -136,8 +136,7 @@ def run_training(args):
                 viz_cameras, train_dataset.img_size
             )
             viz_frames.append(viz_frame)
-            imageio.mimwrite(f"itr_{itr:07d}.gif", viz_frames, loop=0, duration=(1/10.0)*1000)
-
+            
     print("[*] Training Completed.")
 
     # Saving training progess GIF

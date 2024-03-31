@@ -3,7 +3,7 @@ from PIL import Image
 import os
 
 # make gifs loop forever
-target_dir = "Q1/"
+target_dir = "results/gifs/"
 gifs = os.listdir(target_dir)
 print(gifs)
 
