@@ -15,6 +15,7 @@ from PIL import Image
 from SDS import SDS
 from utils import prepare_embeddings, seed_everything
 
+import torchvision.transforms as T
 
 def optimize_nerf(
     sds,
@@ -29,7 +30,7 @@ def optimize_nerf(
     """
 
     # Step 1. Create text embeddings from prompt
-    embeddings = prepare_embeddings(sds, prompt, neg_prompt, view_dependent=False)
+    embeddings = prepare_embeddings(sds, prompt, neg_prompt, view_dependent=True)
 
     # Step 2. Set up NeRF model
     model = NeRFNetwork(args).to(device)
@@ -74,6 +75,7 @@ def optimize_nerf(
     os.makedirs(f"{sds.output_dir}/images", exist_ok=True)
     os.makedirs(f"{sds.output_dir}/videos", exist_ok=True)
 
+    print("iters", args.iters, "len", len(train_loader))
     max_epoch = np.ceil(args.iters / len(train_loader)).astype(np.int32)
     for epoch in range(max_epoch):
         model.train()
@@ -160,19 +162,29 @@ def optimize_nerf(
                 text_cond = embeddings["default"]
             else:
                 ### YOUR CODE HERE ###
-                text_uncond = None
+                text_front = embeddings["front"]
+                text_side = embeddings["side"]
+                text_back = embeddings["back"]
                 text_cond = embeddings["default"]
 
   
             ### YOUR CODE HERE ###
+            pred_rgb = T.Resize(size=(512, 512))(pred_rgb)
             latents = sds.encode_imgs(pred_rgb)
-            loss = sds.sds_loss(latents, text_cond, text_embeddings_uncond=text_uncond)
-
+            if not args.view_dep_text:
+              loss = sds.sds_loss(latents, text_cond, text_embeddings_uncond=text_uncond)
+            else:
+              loss_front = sds.sds_loss(latents, text_front, text_embeddings_uncond=text_uncond)
+              loss_side = sds.sds_loss(latents, text_side, text_embeddings_uncond=text_uncond)
+              loss_back = sds.sds_loss(latents, text_back, text_embeddings_uncond=text_uncond)
+              loss_cond = sds.sds_loss(latents, text_cond, text_embeddings_uncond=text_uncond)
+              loss = loss_front + loss_side + loss_back + loss_cond
 
             # regularizations
             if args.lambda_entropy > 0:
+                # print("lambda_entropy")
                 alphas = outputs["weights"].clamp(1e-5, 1 - 1e-5)
-                # alphas = alphas ** 2 # skewed entropy, favors 0 over 1
+                alphas = alphas ** 2 # skewed entropy, favors 0 over 1
                 loss_entropy = (
                     -alphas * torch.log2(alphas) - (1 - alphas) * torch.log2(1 - alphas)
                 ).mean()
@@ -182,6 +194,7 @@ def optimize_nerf(
                 loss = loss + lambda_entropy * loss_entropy
 
             if args.lambda_orient > 0 and "loss_orient" in outputs:
+                # print("loss_orient")
                 loss_orient = outputs["loss_orient"]
                 loss = loss + args.lambda_orient * loss_orient
 
@@ -281,21 +294,21 @@ def optimize_nerf(
                 os.path.join(sds.output_dir, "videos", f"rgb_ep_{epoch}.mp4"),
                 all_preds,
                 fps=25,
-                quality=8,
+                quality=10,
                 macro_block_size=1,
             )
             imageio.mimwrite(
                 os.path.join(sds.output_dir, "videos", f"depth_ep_{epoch}.mp4"),
                 all_preds_depth,
                 fps=25,
-                quality=8,
+                quality=10,
                 macro_block_size=1,
             )
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--prompt", type=str, default="a hamburger")
+    parser.add_argument("--prompt", type=str, default="a rose")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output_dir", type=str, default="output")
     parser.add_argument("--loss_scaling", type=int, default=1)
@@ -303,8 +316,8 @@ if __name__ == "__main__":
     ### YOUR CODE HERE ###
     # You wil need to tune the following parameters to obtain good NeRF results
     ### regularizations
-    parser.add_argument('--lambda_entropy', type=float, default=0, help="loss scale for alpha entropy")
-    parser.add_argument('--lambda_orient', type=float, default=0, help="loss scale for orientation")
+    parser.add_argument('--lambda_entropy', type=float, default=1e-3, help="loss scale for alpha entropy")
+    parser.add_argument('--lambda_orient', type=float, default=1e-2, help="loss scale for orientation")
     ### shading options
     parser.add_argument('--latent_iter_ratio', type=float, default=0, help="training iters that only use albedo shading")
 
