@@ -308,7 +308,7 @@ def optimize_nerf(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--prompt", type=str, default="a rose")
+    parser.add_argument("--prompt", type=str, default="a standing corgi dog")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output_dir", type=str, default="output")
     parser.add_argument("--loss_scaling", type=int, default=1)
