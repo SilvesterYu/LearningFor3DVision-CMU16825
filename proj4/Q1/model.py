@@ -10,6 +10,7 @@ from data_utils import load_gaussians_from_ply, colours_from_spherical_harmonics
 import os
 import imageio
 import pytorch3d
+import torch.nn.functional as F
 
 class Gaussians:
 
@@ -810,4 +811,5 @@ class Scene:
         N = means_3D.shape[0]
         camera_centers = camera.get_camera_center().repeat(N, 1)
         gaussian_dirs = means_3D - camera_centers  # (N, 3)
+        gaussian_dirs = F.normalize(gaussian_dirs)
         return gaussian_dirs
