@@ -21,14 +21,14 @@
 
         <h4> 1.2 Training 3D Gaussian Representations (15 points) </h4>
         <p>- Learning rates that I used for each parameter:</p>
-        <p>(1) pre_act_opacities: 0.05</p>
-        <p>(2) pre_act_scales: 0.005</p>
-        <p>(3) colours: 0.025</p>
+        <p>(1) pre_act_opacities: 0.001</p>
+        <p>(2) pre_act_scales: 0.001</p>
+        <p>(3) colours: 0.001</p>
         <p>(4) means: 0.0001</p>
 
-        <p>- Number of iterations that I trained the model for: 250</p>
+        <p>- Number of iterations that I trained the model for: 1000</p>
 
-        <P>- PSNR: 25.591, SSIM: 0.903</P>
+        <P>- PSNR: 27.700, SSIM: 0.923</P>
         
         <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/q1_training_final_renders.gif", style="width:20%; margin-left:40%">
 
@@ -44,6 +44,16 @@
         <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/q1_harder_training_final_renders.gif", style="width:20%; margin-left:40%">
 
         <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/q1_harder_training_progress.gif", style="width:60%; margin-left:20%">
+
+        <p> Tuned</p>
+        
+        <p> - PSNR: 16.485, SSIM: 0.281</p>
+
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/q1_harder_training_final_renders.gif", style="width:20%; margin-left:40%">
+
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/q1_harder_training_progress.gif", style="width:60%; margin-left:20%">
+
+
 
         <h3> 2. Diffusion-guided Optimization </h3>
 
@@ -129,7 +139,7 @@
         <section>
           <div class="row">
       
-              <div class="column2", style="margin-left: 0%">
+              <div class="column2", style="margin-left: 25%">
                   <p>  "a hamburger" </p>
                   <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/a_hamburger_final_mesh2.gif", style="width:100%">
       
@@ -140,16 +150,27 @@
                   <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/a_cow_final_mesh2.gif", style="width:100%">
                 </div>
 
-                <div class="column2">
-                  <p> "a tree"</p>
-                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/a_tree_final_mesh.gif", style="width:100%">
-                </div>
-
-                <div class="column2">
-                  <p> "a zebra"</p>
-                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/a_zebra_final_mesh.gif", style="width:100%">
-                </div>
+              
+  
+               
           </div>
+
+          <section>
+            <div class="row">
+        
+
+              <div class="column2", style="margin-left: 25%">
+                    <p> "a zebra"</p>
+                    <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/a_zebra_final_mesh.gif", style="width:100%">
+                  </div>
+  
+                  <div class="column2">
+                    <p> "a tree"</p>
+                    <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/a_tree_final_mesh.gif", style="width:100%">
+                  </div>
+  
+                 
+            </div>
       
           
       </section>
@@ -170,430 +191,4 @@
 
 
 
-        <h4>0. Transmittance Calculation</h4>
-
         
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/transmittance_calculation/figure1.png", style="width:70%; margin-left:15%">
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/transmittance.png", style="width:70%; margin-left:15%">
-  
-        <h4> 1. Differentiable Volume Rendering </h4>
-        <h4> 1.3 Ray sampling </h4>
-
-                              <section>
-                <div class="row">
-      
-                    <div class="column2", style="margin-left: 25%">
-                        <p> xygrid </p>
-                        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/images/1.3_xygrid.png", style="width:100%">
-
-                          </div>
-      
-                    <div class="column2">
-                        <p> rays </p>
-                        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/images/1.3_rays.png", style="width:100%">
-                      </div>
-                </div>
-      
-                
-            </section>
-
-        <p></p>
-
-        <h4>1.4 Point sampling</h4>
-
-        <section>
-          <div class="row">
-
-              <div class="column2", style="margin-left: 37.5%">
-                  <p> sampled </p>
-                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/images/sampled.png", style="width:100%">
-
-                    </div>
-
-          
-      </section>
-
-      <h4>1.5. Volume rendering</h4>
-
-
-      <section>
-        <div class="row">
-
-            <div class="column2", style="margin-left: 25%">
-                <p>  </p>
-                <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/images/1.5_depth_viz.png", style="width:100%">
-
-                  </div>
-
-            <div class="column2">
-                <p>  </p>
-                <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_1_.gif", style="width:100%">
-              </div>
-
-        
-    </section>
-
-    <h4>2. Optimizing a basic implicit volume</h4>
-    <h4>2.1. Random ray sampling</h4>
-
-    <p>Box center: (0.2502, 0.2506, -0.0005)</p>
-      
-    <p>Box side lengths: (2.0051, 1.5035, 1.5033)</p>
-
-
-    <section>
-          <div class="row">
-
-              <div class="column2", style="margin-left: 37.5%">
-                  <p>  </p>
-                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_2.gif", style="width:100%">
-
-                    </div>
-
-          
-      </section>
-    
-
-    <h4>3. Optimizing a Neural Radiance Field (NeRF)</h4>
-    <p>The result below is from a NeRF MLP that does not handle view dependence yet. It uses ReLU activation to map the first network output to density and Sigmoid activation to map the remaining raw network outputs to color, and HarmonicEmbedding for better quality.</p>
-
-
-    <section>
-      <div class="row">
-
-          <div class="column2", style="margin-left: 37.5%">
-              <p>  </p>
-              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_3_lowres.gif", style="width:100%">
-
-                </div>
-
-      
-  </section>
-
-  <h4>4. NeRF Extras</h4>
-  <h4>4.1 View Dependence</h4>
-  <p> Tradeoffs: Using view dependence gave more realistic results, as color is predicted on position and ray direction. Ray direction embedding is also used for color prediction, instead of position only. This is can produce much better quality renderings for objects that show drastically different surface colors under different views, The result is shown below, and we can see that the light reflections on the somewhat metalic surface looks realistic.</p>
-
-  <p> However, using view dependence involves a risk of overfitting to the training images, say, if the training dataset is small and doesn't have sufficient view points, or if the model is designed to heavily rely on the view direction.</p>
-
-  <p> Therefore, we need a large dataset with diverse views, and a model that generalizes well.</p>
-    
-  <section>
-    <div class="row">
-
-        <div class="column2", style="margin-left: 37.5%">
-            <p>  </p>
-            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_3_view.gif", style="width:100%">
-
-              </div>
-</section>
-       
-
-<h3>B. Neural Surface Rendering</h3>
-<h4>5. Sphere Tracing</h4>
-<p>Iteratively update points, starting from the origins, and adding distance to the closest surface multiplied with the direction of the ray.</p>
-
-<p> A mask with the same batch dimension as the ray origins is maintained to mark whicih rays already have a distance less than the threshold 1e-6. The loop ends when all rays have distance below that threshold or when we have reached the maximum number of iterations.</p>
-
-<section>
-  <div class="row">
-
-      <div class="column2", style="margin-left: 37.5%">
-          <p>  </p>
-          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/3df3018739d08c9fe519e5cbfd0ba4a1c3de6ffa/proj3/results/part_5.gif", style="width:100%">
-
-            </div>
-</section>
-
-
-
-<h4>6. Optimizing a Neural SDF</h4>
-
-<section>
-  <div class="row">
-
-      <div class="column2", style="margin-left: 25%">
-          <p> part6 input </p>
-          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_6_input.gif", style="width:100%">
-
-            </div>
-
-      <div class="column2">
-          <p> part 6 result </p>
-          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_6.gif", style="width:100%">
-        </div>
-
-  
-</section>
-
-<p></p>
-
-<p> Eikonal loss here is: torch.mean(torch.square(torch.norm(gradients, dim = 1, keepdim = True) - 1))
-</p>
-
-<p> MLP structure:</p>
-
-<p>- Using HarmonicEmbedding for the input</p>
-
-<p>- 7 fully connected layers, with a ReLU activation function on each layer except the final one</p>
-
-<p>- The 4th layer has a skip connection</p>
-
-
-<h4>7. VolSDF</h4>
-<p> Alpha: constant density</p>
-<p> Beta: the smoothness index with which alpha increases at the boundary</p>
-<p> ------------------ </p>
-<p>1. How does high beta bias your learned SDF? What about low beta?</p>
-<p>A high beta will let the density decrease slower near the boundaries, creating more blurred rendering results. A low beta will let the SDF decrease abruptly, creating sharper rendering results. High beta allows more accurate prediction of lighting, and makes the rendering look more realistic to an extent. </p>
-<p> ------------------ </p>
-<p>2. Would an SDF be easier to train with volume rendering and low beta or high beta? Why?</p>
-<p> SDF is easier to train using higher beta. This is because the smoother the SDF is, the easier it is to optimize using the gradients. </p>
-<p> ------------------ </p>
-<p>3. Would you be more likely to learn an accurate surface with high beta or low beta? Why?</p>
-<p>Low beta is better for learning an accurate surface. Sharper SDF captures surface details and can better represent objects with sharper shapes or detailed surface shapes. When beta is too high, the rendering becomes too blurry and the accuracy of shape drops. However, high beta allows more accurate prediction of lighting, and makes the surface colors look more realistic to an extent. We should keep the tradeoffs in mind.</p>
-<h4>Hyperparameter tuning</h4>
-<p> Test with different beta, keeping alpha = 10, we find that the best beta is 0.05.</p>
- <p>If beta is too large, the rendering becomes too blurry.</p>
-
- <section>
-  <div class="row">
-
-      <div class="column2", style="margin-left: 25%">
-          <p> alpha = 10, </p>
-          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_a10b0-1.gif", style="width:100%">
-
-            </div>
-
-      <div class="column2">
-          <p> beta = 0.01 </p>
-          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_a19b0-1.gif", style="width:100%">
-        </div>
-
-  
-</section>
-
- <section>
-  <div class="row">
-
-      <div class="column2", style="margin-left: 25%">
-          <p> alpha = 10, </p>
-          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_a10b0-5.gif", style="width:100%">
-
-            </div>
-
-      <div class="column2">
-          <p> beta = 0.05 </p>
-          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_a10b0-5.gif", style="width:100%">
-        </div>
-
-  
-</section>
-
-<section>
-  <div class="row">
-
-      <div class="column2", style="margin-left: 25%">
-          <p> alpha = 10, </p>
-          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_a10b1.gif", style="width:100%">
-
-            </div>
-
-      <div class="column2">
-          <p> beta = 0.1 </p>
-          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_a10b1.gif", style="width:100%">
-        </div>
-
-  
-</section>
-
-<p> Test with different alpha, keeping beta = 0.05, we find that the best alpha is 25.</p>
-<p> If the alpha is too small, the density is more spread-out, and we might fail to capture details </p>
-
-<section>
-
-  <div class="row">
-  
-    <div class="column2", style="margin-left: 25%">
-        <p> alpha = 1</p>
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_a1.gif", style="width:100%">
-  
-          </div>
-  
-    <div class="column2">
-        <p> beta = 0.05 </p>
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_a1.gif", style="width:100%">
-      </div>
-  
-  
-  </section>
-
-<section>
-
-<div class="row">
-
-  <div class="column2", style="margin-left: 25%">
-      <p> alpha = 25,</p>
-      <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_a25.gif", style="width:100%">
-
-        </div>
-
-  <div class="column2">
-      <p> beta = 0.05 </p>
-      <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_a25.gif", style="width:100%">
-    </div>
-
-
-</section>
-
-<section>
-<div class="row">
-
-  <div class="column2", style="margin-left: 25%">
-      <p> alpha = 50,</p>
-      <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_a50.gif", style="width:100%">
-
-        </div>
-
-  <div class="column2">
-      <p> beta = 0.05 </p>
-      <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_a50.gif", style="width:100%">
-    </div>
-
-
-</section>
-
-
-<h4>8. Neural Surface Extras</h4>
-<h4>8.1. Render a Large Scene with Sphere Tracing</h4>
-<p> Rendering more spheres</p>
-<section>
-  <div class="row">
-
-      <div class="column2", style="margin-left: 37.5%">
-          <p>  </p>
-          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/spheres.gif", style="width:100%">
-
-            </div>
-</section>
-
-
-<h4>8.2 Fewer Training Views</h4>
-<p> Here I modified train_idx in dataset.py to decrease the number of views.</p>
-<p> From the results we see that NERF generally has more detailed and accurate rendering results. However, when the number of views is extremely limited, VolSDF performs better than NERF.</p>
-<p> 20 views</p>
-<section>
-  <div class="row">
-    <div class="column2", style="margin-left: 11%">
-      <p> geometry</p>
-      <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_view20.gif", style="width:100%">
-
-        </div>
-  
-    <div class="column2">
-        <p> NERF </p>
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_3_nerf20.gif", style="width:100%">
-  
-          </div>
-  
-    <div class="column2">
-        <p> VolSDF </p>
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_view20.gif", style="width:100%">
-      </div>
-      </div>
-  </secion>
-
-      <p></p>
-      <p> 10 views</p>
-      <section>
-        <div class="row">
-          <div class="column2", style="margin-left: 11%">
-            <p> geometry</p>
-            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_view10.gif", style="width:100%">
-      
-              </div>
-          <div class="column2">
-              <p>NERF </p>
-              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_3_nerf10.gif", style="width:100%">
-        
-                </div>
-        
-          <div class="column2">
-              <p> VolSDF </p>
-              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_view10.gif", style="width:100%">
-            </div>
-
-            
-          </section>
-
-
-
-  
-  
-  </section>
-
-
-
-<h4>8.3 Alternate SDF to Density Conversions</h4>
-  <p> The ‘naive’ solution from the NeuS paper is implemented here. The probability distribution function S density introduced in the paper has the formula:</p>
-  
-  <section>
-    <div class="row">
-  
-        <div class="column2", style="margin-left: 37.5%">
-            <p>  </p>
-            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/s-dens.png", style="width:100%">
-  
-              </div>
-  </section>
-<p> Varying s value, I got the following results: </p>
-
-<section>
-  <p> s = 40</p>
-  <div class="row">
-
-  
-    <div class="column2", style="margin-left: 25%">
-        <p> </p>
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_s40.gif", style="width:100%">
-  
-          </div>
-  
-    <div class="column2">
-        <p> </p>
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_s40.gif", style="width:100%">
-      </div>
-  
-  
-  </section>
-
-  <section>
-    <p> s = 20</p>
-    <div class="row">
-  
-    
-      <div class="column2", style="margin-left: 25%">
-          <p> </p>
-          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_geometry_s20.gif", style="width:100%">
-    
-            </div>
-    
-      <div class="column2">
-          <p> </p>
-          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj3/results/part_7_s20.gif", style="width:100%">
-        </div>
-    
-    
-    </section>
-
-
-  
-
-
- <p>Larger s made the rendering sharper, but also less smooth. It generally performs worse than Q7's VolSDF. </p>
-
-
-
-        <link rel="stylesheet" href="css/style.css">
-    </body>
-</html>
