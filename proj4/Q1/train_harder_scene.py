@@ -14,6 +14,9 @@ from data_utils_harder_scene import get_nerf_datasets, trivial_collate
 from pytorch3d.renderer import PerspectiveCameras
 from skimage.metrics import peak_signal_noise_ratio, structural_similarity
 
+import torchvision.transforms as T
+import torch.nn.functional as F
+
 def make_trainable(gaussians):
 
     ### YOUR CODE HERE ###
@@ -22,6 +25,10 @@ def make_trainable(gaussians):
     gaussians.pre_act_scales.requires_grad = True
     gaussians.colours.requires_grad = True
     gaussians.pre_act_opacities.requires_grad = True
+    try:
+        gaussians.pre_act_quats.requires_grad = True
+    except:
+        print("isotropic")
     gaussians.init_type = "random"
 
 def setup_optimizer(gaussians):
@@ -35,10 +42,10 @@ def setup_optimizer(gaussians):
     # fast with the default settings.
     # HINT: Consider setting different learning rates for different sets of parameters.
     parameters = [
-        {'params': [gaussians.pre_act_opacities], 'lr': 0.001, "name": "opacities"},
-        {'params': [gaussians.pre_act_scales], 'lr': 0.001, "name": "scales"},
-        {'params': [gaussians.colours], 'lr': 0.001, "name": "colours"},
-        {'params': [gaussians.means], 'lr': 0.0001, "name": "means"},
+        {'params': [gaussians.pre_act_opacities], 'lr': 0.002, "name": "opacities"},
+        {'params': [gaussians.pre_act_scales], 'lr': 0.002, "name": "scales"},
+        {'params': [gaussians.colours], 'lr': 0.002, "name": "colours"},
+        {'params': [gaussians.means], 'lr': 0.001, "name": "means"},
     ]
     optimizer = torch.optim.Adam(parameters, lr=0.0, eps=1e-15)
     # optimizer = None
@@ -92,7 +99,7 @@ def run_training(args):
     # Init gaussians and scene
     gaussians = Gaussians(
         num_points=10000, init_type="random",
-        device=args.device, isotropic=True
+        device=args.device, isotropic=False
     )
     scene = Scene(gaussians)
 
@@ -130,7 +137,7 @@ def run_training(args):
 
         # Compute loss
         ### YOUR CODE HERE ###
-        loss = None
+        loss = F.l1_loss(pred_img, gt_img)
 
         loss.backward()
         optimizer.step()
@@ -144,6 +151,7 @@ def run_training(args):
                 viz_cameras, (128, 128)
             )
             viz_frames.append(viz_frame)
+            imageio.mimwrite("harder_iter" + str(itr) + ".gif", viz_frames, loop=0, duration=(1/10.0)*1000)
 
     print("[*] Training Completed.")
 
@@ -249,7 +257,7 @@ def get_args():
         "--viz_freq", default=20, type=int,
         help="Frequency with which visualization should be performed."
     )
-    parser.add_argument("--device", default="cuda", type=str, choices=["cuda", "cpu"])
+    parser.add_argument("--device", default="cuda", type=str, choices=["cuda", "cuda:1", "cpu"])
     args = parser.parse_args()
     return args
 

@@ -39,15 +39,25 @@
 
         <p> Baseline: initial learning rates and training iterations are the same as in the above question</p>
         
-        <p> - PSNR: 16.485, SSIM: 0.281</p>
+        <p> - PSNR: 16.194, SSIM: 0.576</p>
 
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/q1_harder_training_final_renders.gif", style="width:20%; margin-left:40%">
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/q1_harder_training_final_renders_prev.gif", style="width:20%; margin-left:40%">
 
-        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/q1_harder_training_progress.gif", style="width:60%; margin-left:20%">
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/q1_harder_training_progress_prev.gif", style="width:60%; margin-left:20%">
 
         <p> Tuned</p>
+
+        <p>Changes:</p>
+
+        <p>(1) Changed isotropic to False</p>
+
+        <p>(2) Doubled learning rate for all the parameters</p>
+
+        <p>(3) Increased total iterations to 2000</p>
         
-        <p> - PSNR: 16.485, SSIM: 0.281</p>
+        <p> - PSNR: 17.738, SSIM: 0.656</p>
+
+        <p>The tuned results look less blurry than the baseline adn better reconstructs the shapes in the original renderings</p>
 
         <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/q1_harder_training_final_renders.gif", style="width:20%; margin-left:40%">
 
@@ -177,7 +187,118 @@
 
         <h4>2.3 NeRF Optimization (15 points)</h4>
 
+        <p> "a hamburger"</p>
+        <p>--lambda_entropy 1e-4 --lambda_orient 1e-2  --iters 2500</p>
+
+        
+        <section>
+          <div class="row">
+      
+
+            <div class="column2", style="margin-left: 12.5%">
+                  <p> image</p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/hamburger_rgb_epoch_24_iter_2500.png", style="width:100%">
+                </div>
+
+                <div class="column2">
+                  <p> rgb video</p>
+
+                    <video width="100%" height="100%" autoplay controls>
+                      <source src="https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/hamburger_rgb_ep_24.mp4" type="video/mp4">
+
+                    </video>
+                  </div>
+
+                <div class="column2">
+                  <p>depth video</p>
+                  <video width="100%" height="100%" autoplay controls>
+                    <source src="https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/hamburger_depth_ep_24.mp4" type="video/mp4">
+
+                  </video>
+                  </div>
+
+               
+          </div>
+    
+        
+    </section>
+
+    <p> "a standing corgi dog"</p>
+    <p>--lambda_entropy 1e-4 --lambda_orient 1e-2  --iters 3000</p>
+        <section>
+          <div class="row">
+      
+
+            <div class="column2", style="margin-left: 12.5%">
+                  <p> image</p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/corgi_rgb_epoch_29_iter_3000.png", style="width:100%">
+                </div>
+
+                <div class="column2">
+                  <p> rgb video</p>
+
+                    <video width="100%" height="100%" autoplay controls>
+                      <source src="https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/corgi_rgb_ep_29.mp4" type="video/mp4">
+
+                    </video>
+                  </div>
+
+                <div class="column2">
+                  <p>depth video</p>
+                  <video width="100%" height="100%" autoplay controls>
+                    <source src="https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/corgi_depth_ep_29.mp4" type="video/mp4">
+
+                  </video>
+                  </div>
+
+               
+          </div>
+    
+        
+    </section>
+
+
+
+    <p> "a standing corgi dog"</p>
+    <p>--lambda_entropy 1e-3 --lambda_orient 1e-2  --iters 3000</p>
+        <section>
+          <div class="row">
+      
+
+            <div class="column2", style="margin-left: 12.5%">
+                  <p> image</p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/corgi_rgb_epoch_29_iter_3000.png", style="width:100%">
+                </div>
+
+                <div class="column2">
+                  <p> rgb video</p>
+
+                    <video width="100%" height="100%" autoplay controls>
+                      <source src="https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/corgi_rgb_ep_29.mp4" type="video/mp4">
+
+                    </video>
+                  </div>
+
+                <div class="column2">
+                  <p>depth video</p>
+                  <video width="100%" height="100%" autoplay controls>
+                    <source src="https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj4/results/corgi_depth_ep_29.mp4" type="video/mp4">
+
+                  </video>
+                  </div>
+
+               
+          </div>
+    
+        
+    </section>
+
+
+
+
         <h4>2.4 Extensions</h4>
+        <h4>2.4.1 View-Dependent Text Embedding (10 points)</h4>
+
         <h4>2.4.3 Variation of implementation of SDS loss (10 points)</h4>
 
 
