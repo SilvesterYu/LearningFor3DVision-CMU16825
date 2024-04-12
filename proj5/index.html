@@ -1,0 +1,755 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>CMU 16825 Learning for 3D Vision</title>
+        <link rel="stylesheet" href="css/style.css">
+        <!-- <link rel="stylesheet" href="https://latex.now.sh/style.css"> -->
+    </head>
+    
+    <body class="#grad">
+        <h1>CMU 16825 Learning for 3D Vision</h1>
+        <h2> Assignment #5 </h2>
+        <h4>Lifan Yu (lifany)</h4>
+
+        <h3> Q1. Classification Model </h3>
+        <p> Test accuracy of the best model: 0.972</p>
+        <p> Trained for 250 epochs, tested on checkpoint of epoch 240</p>
+        <p> Successful examples:</p>
+        <section>
+          <div class="row">
+  
+              <div class="column2", style="margin-left: 16%">
+                  <p> Chair  </p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/1-01.gif", style="width:100%">
+                    </div>
+  
+              <div class="column2">
+                  <p>  Vase  </p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/1-02.gif", style="width:100%">
+                </div>
+
+                <div class="column2">
+                  <p>  Lamp  </p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/1-03.gif", style="width:100%">
+                </div>
+          </div>
+
+    </section>
+
+
+
+        <p> Failure examples:</p>
+                <section>
+          <div class="row">
+  
+              <div class="column2", style="margin-left: 16%">
+                  <p> Chair  </p>
+                  <p> predicted as lamp</p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/1-1.gif", style="width:100%">
+                    </div>
+  
+              <div class="column2">
+                  <p>  Vase  </p>
+                  <p> predicted as lamp</p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/1-2.gif", style="width:100%">
+                </div>
+
+                <div class="column2">
+                  <p>  Lamp  </p>
+                  <p> predicted as vase</p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/1-3.gif", style="width:100%">
+                </div>
+          </div>
+
+          
+    </section>
+    <p> Explanations: The model often confuses lamps with vases when a lamp has shape similar to a flower, or when a flower looks like a lamp. In the case of chairs, some chairs are folded or have unusual lengths and widths (if they look overly tall or flat), they get predicted incorrectly as lamps or vases </p>
+
+
+    <h3> Q2. Segmentation Model </h3>
+    <p> Test accuracy of best model: 0.908, at epoch 190</p>
+
+        <section>
+          <div class="row">
+            <p> Good prediction accuracies</p>
+  
+              <div class="column2", style="margin-left: 16%">
+                  <p> 0.989 </p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/2-01.gif", style="width:100%">
+                    </div>
+  
+              <div class="column2">
+                  <p>  0.964  </p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/2-021.gif", style="width:100%">
+                </div>
+
+                <div class="column2">
+                  <p>  0.953  </p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/2-03.gif", style="width:100%">
+                </div>
+          </div>
+
+          <div class="row">
+            <p> Ground truth </p>
+  
+            <div class="column2", style="margin-left: 16%">
+                <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/2-01t.gif", style="width:100%">
+                  </div>
+
+            <div class="column2">
+                <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/2-02t1.gif", style="width:100%">
+              </div>
+
+              <div class="column2">
+                <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/2-03t.gif", style="width:100%">
+              </div>
+        </div>
+
+    </section>
+
+
+
+        <p> Bad prediction accuracies:</p>
+                <section>
+          <div class="row">
+  
+              <div class="column2", style="margin-left: 16%">
+                  <p> 0.678  </p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/2-1.gif", style="width:100%">
+                    </div>
+  
+              <div class="column2">
+                  <p>  0.574  </p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/2-2.gif", style="width:100%">
+                </div>
+
+                <div class="column2">
+                  <p>  0.654  </p>
+                  <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/2-3.gif", style="width:100%">
+                </div>
+          </div>
+
+          <div class="row">
+            <p> Ground truth </p>
+  
+            <div class="column2", style="margin-left: 16%">
+                <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/2-1t.gif", style="width:100%">
+                  </div>
+
+            <div class="column2">
+                <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/2-2t.gif", style="width:100%">
+              </div>
+
+              <div class="column2">
+                <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/2-3t.gif", style="width:100%">
+              </div>
+        </div>
+
+        <p> Explanations: The examples witih good prediction accuracies have sharper edges between different parts of the chair. The different parts of these chairs are mostly perpendicular to each other. </p>
+          <p>However, for the bad predictions, the chairs tend to have smooth transitions from one part into another or unusual shapes.</p> 
+          <p>The first chair in the bad examples have legs with unusual shapes and smooth connection with the chair's seating area. The model classified a large number of points in the chairs' legs into as part of the seating area. </p>
+          <P> The second bad example has part of the chair's seating area leveled with the chair's legs, tricking the model into classifying the extended seating area as another leg.</P>
+          <p>The third bad example has different parts of the chair intersecting each other, making it difficult for the model to classify points near those intersections.</p>
+
+      
+</section>
+
+<h3> Q3. Robustness Analysis </h3>
+
+<h4> Rotate input point clouds by certain  axis angle on x axis </h4>
+
+
+
+<section>
+  <h4> 0.2 rad</h4>
+  <div class="row">
+
+      <div class="column2", style="margin-left: 0%">
+          <p> Prediction accuracy: 0.953  </p>
+                    </div>
+
+            <div class="column2">
+              <p>  success  </p>
+              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-11.gif", style="width:100%">
+            </div>
+
+      <div class="column2">
+          <p> success  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-12.gif", style="width:100%">
+        </div>
+
+        <div class="column2">
+          <p>  success  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-13.gif", style="width:100%">
+        </div>
+  </div>
+
+  <div class="row">
+
+      <div class="column2", style="margin-left: 0%">
+                    </div>
+
+            <div class="column2">
+              <p>  success  </p>
+              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-14.gif", style="width:100%">
+            </div>
+
+      <div class="column2">
+          <p> fail  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-15.gif", style="width:100%">
+        </div>
+
+        <div class="column2">
+          <p>  fail  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-16.gif", style="width:100%">
+        </div>
+  </div>
+
+  <h4> 0.5 rad</h4>
+
+  <div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+        <p> Prediction accuracy: 0.824  </p>
+                  </div>
+
+          <div class="column2">
+            <p>  success  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-21.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> fail  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-22.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  success  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-23.gif", style="width:100%">
+      </div>
+</div>
+
+<div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+                  </div>
+
+          <div class="column2">
+            <p>  success  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-24.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> fail  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-25.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  fail  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-26.gif", style="width:100%">
+      </div>
+</div>
+
+<h4> 1.0 rad</h4>
+
+  <div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+        <p> Prediction accuracy: 0.343  </p>
+                  </div>
+
+          <div class="column2">
+            <p>  fail  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-31.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> success  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-32.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  fail  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-33.gif", style="width:100%">
+      </div>
+</div>
+
+<div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+                  </div>
+
+          <div class="column2">
+            <p>  success  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-34.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> fail  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-35.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  fail  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-36.gif", style="width:100%">
+      </div>
+</div>
+
+</section>
+
+<h4> Interpretation: </h4>
+<p> </p>
+
+<section>
+  <h4> 0.2 rad</h4>
+  <div class="row">
+
+      <div class="column2", style="margin-left: 0%">
+          <p> Prediction accuracy: 0.874  </p>
+                    </div>
+
+            <div class="column2">
+              <p>  0.9799  </p>
+              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p11.gif", style="width:100%">
+            </div>
+
+      <div class="column2">
+          <p> 0.933  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p12.gif", style="width:100%">
+        </div>
+
+        <div class="column2">
+          <p>  0.9202  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p13.gif", style="width:100%">
+        </div>
+  </div>
+
+  <div class="row">
+
+      <div class="column2", style="margin-left: 0%">
+                    </div>
+
+            <div class="column2">
+              <p>  0.6425  </p>
+              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p14.gif", style="width:100%">
+            </div>
+
+      <div class="column2">
+          <p> 0.6355  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p15.gif", style="width:100%">
+        </div>
+
+        <div class="column2">
+          <p>  0.6295  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p16.gif", style="width:100%">
+        </div>
+  </div>
+
+  <h4> 0.5 rad</h4>
+
+  <div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+        <p> Prediction accuracy: 0.788  </p>
+                  </div>
+
+          <div class="column2">
+            <p>  0.8443  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p21.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> 0.9512  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p22.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  0.789  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p23.gif", style="width:100%">
+      </div>
+</div>
+
+<div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+                  </div>
+
+          <div class="column2">
+            <p>   0.6346  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p24.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> 0.4192  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p25.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  0.5511  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p26.gif", style="width:100%">
+      </div>
+</div>
+
+<h4> 1.0 rad</h4>
+
+  <div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+        <p> Prediction accuracy:  0.566  </p>
+                  </div>
+
+          <div class="column2">
+            <p>  0.4715  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p31.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> 0.6948  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p32.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  0.614  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p33.gif", style="width:100%">
+      </div>
+</div>
+
+<div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+                  </div>
+
+          <div class="column2">
+            <p>  0.2981  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p34.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> 0.2226  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p35.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  0.4645  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p36.gif", style="width:100%">
+      </div>
+</div>
+
+</section>
+
+<h4> Changing number of points </h4>
+
+<section>
+  <h4> 1000 points</h4>
+  <div class="row">
+
+      <div class="column2", style="margin-left: 0%">
+          <p> Prediction accuracy: 0.969  </p>
+                    </div>
+
+            <div class="column2">
+              <p>  success  </p>
+              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-41.gif", style="width:100%">
+            </div>
+
+      <div class="column2">
+          <p> fail  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-42.gif", style="width:100%">
+        </div>
+
+        <div class="column2">
+          <p>  success  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-43.gif", style="width:100%">
+        </div>
+  </div>
+
+  <div class="row">
+
+      <div class="column2", style="margin-left: 0%">
+                    </div>
+
+            <div class="column2">
+              <p>  fail  </p>
+              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-44.gif", style="width:100%">
+            </div>
+
+      <div class="column2">
+          <p> fail  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-45.gif", style="width:100%">
+        </div>
+
+        <div class="column2">
+          <p>  fail  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-46.gif", style="width:100%">
+        </div>
+  </div>
+
+  <h4> 500 points </h4>
+
+  <div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+        <p> Prediction accuracy: 0.964  </p>
+                  </div>
+
+          <div class="column2">
+            <p>  success  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-51.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> fail  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-52.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  success  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-53.gif", style="width:100%">
+      </div>
+</div>
+
+<div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+                  </div>
+
+          <div class="column2">
+            <p>  fail  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-54.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> fail  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-55.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  fail  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-56.gif", style="width:100%">
+      </div>
+</div>
+
+<h4> 100 points </h4>
+
+  <div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+        <p> Prediction accuracy: 0.905  </p>
+                  </div>
+
+          <div class="column2">
+            <p>  success  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-61.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> fail  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-62.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  fail  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-63.gif", style="width:100%">
+      </div>
+</div>
+
+<div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+                  </div>
+
+          <div class="column2">
+            <p>  fail  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-64.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> fail  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-65.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  yes  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-66.gif", style="width:100%">
+      </div>
+</div>
+
+</section>
+
+
+
+<h4> Segmentation </h4>
+
+
+
+
+<section>
+  <h4> 0.2 rad</h4>
+  <div class="row">
+
+      <div class="column2", style="margin-left: 0%">
+          <p> Prediction accuracy: 0.897  </p>
+                    </div>
+
+            <div class="column2">
+              <p>  0.991  </p>
+              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p41.gif", style="width:100%">
+            </div>
+
+      <div class="column2">
+          <p> 0.947  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p42.gif", style="width:100%">
+        </div>
+
+        <div class="column2">
+          <p>  0.929  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p43.gif", style="width:100%">
+        </div>
+  </div>
+
+  <div class="row">
+
+      <div class="column2", style="margin-left: 0%">
+                    </div>
+
+            <div class="column2">
+              <p>  0.721  </p>
+              <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p44.gif", style="width:100%">
+            </div>
+
+      <div class="column2">
+          <p> 0.566  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p45.gif", style="width:100%">
+        </div>
+
+        <div class="column2">
+          <p>  0.676  </p>
+          <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p46.gif", style="width:100%">
+        </div>
+  </div>
+
+  <h4> 0.5 rad</h4>
+
+  <div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+        <p> Prediction accuracy: 0.886  </p>
+                  </div>
+
+          <div class="column2">
+            <p>  0.992  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p51.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> 0.964  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p52.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  0.934  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p53.gif", style="width:100%">
+      </div>
+</div>
+
+<div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+                  </div>
+
+          <div class="column2">
+            <p>   0.762  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p54.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> 0.554  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p55.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  0.73  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p56.gif", style="width:100%">
+      </div>
+</div>
+
+<h4> 100 points</h4>
+
+  <div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+        <p> Prediction accuracy:  0.823  </p>
+                  </div>
+
+          <div class="column2">
+            <p>  0.99  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p61.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> 0.87  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p62.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  0.85  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p63.gif", style="width:100%">
+      </div>
+</div>
+
+<div class="row">
+
+    <div class="column2", style="margin-left: 0%">
+                  </div>
+
+          <div class="column2">
+            <p>  0.8  </p>
+            <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p64.gif", style="width:100%">
+          </div>
+
+    <div class="column2">
+        <p> 0.6  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p65.gif", style="width:100%">
+      </div>
+
+      <div class="column2">
+        <p>  0.7  </p>
+        <img src = "https://raw.githubusercontent.com/SilvesterYu/LearningFor3DVision-CMU16825/main/proj5/results/loop/3-p66.gif", style="width:100%">
+      </div>
+</div>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+
+
+
+
+
+
+
+        
